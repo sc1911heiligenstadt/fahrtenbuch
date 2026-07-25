@@ -1,7 +1,24 @@
 // ---------- Helpers ----------
+// Fahrt- und Foto-Ids. Beide gehen an den Worker (dav-file-put, fahrtenbuch-
+// belege-list/-beleg-file-get, die extern-Aktionen) und werden dort gegen
+// FILE_ID_RE geprüft, das AUSSCHLIESSLICH das UUID-Format akzeptiert. Der
+// frühere Fallback ("f" + 8 Hex) war zwar gegen den fehlenden crypto.randomUUID
+// abgesichert, lieferte aber kein UUID-Format: auf iOS mit Safari < 15.4 schlug
+// der Foto-Upload dadurch mit HTTP 400 fehl, und beim externen Formular fielen
+// die Fotos beim Absenden serverseitig still aus dem Datensatz. crypto.getRandom-
+// Values gibt es dort seit jeher — daraus bauen wir das Format selbst zusammen:
+// 16 Zufallsbytes, Version 4 und Variante gesetzt.
 function uuid() {
-  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-  return "fxxxxxxxx".replace(/x/g, () => ((Math.random() * 16) | 0).toString(16));
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  const b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  b[6] = (b[6] & 0x0f) | 0x40;
+  b[8] = (b[8] & 0x3f) | 0x80;
+  const hex = Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+  return hex.slice(0, 8) + "-" + hex.slice(8, 12) + "-" + hex.slice(12, 16) +
+         "-" + hex.slice(16, 20) + "-" + hex.slice(20);
 }
 function escapeHtml(str) {
   if (str == null) return "";

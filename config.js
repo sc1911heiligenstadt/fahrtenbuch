@@ -107,6 +107,17 @@ const HINWEIS_ABSCHLUSS =
 
 const APP_CHANGELOG = [
   {
+    version: "1.1",
+    groups: [
+      {
+        title: "Foto-Upload auf älteren iPhones/iPads",
+        items: [
+          "Auf iOS-Geräten mit Safari älter als 15.4 schlug das Hochladen von Mängel-Fotos fehl („Ungültige Datei-Id“), weil die intern vergebene Id dort nicht im vom Server verlangten Format erzeugt wurde. Im externen Fahrten-Formular fielen die Fotos dabei sogar unbemerkt aus dem abgeschickten Datensatz. Die Id wird jetzt bei Bedarf selbst im richtigen Format erzeugt; auf neueren Geräten ändert sich nichts."
+        ]
+      }
+    ]
+  },
+  {
     version: "1.0",
     groups: [
       {

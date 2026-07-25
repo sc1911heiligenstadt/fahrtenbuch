@@ -1,7 +1,18 @@
 // ---------- 1:1 aus app.js übernommene DOM-Helfer (bei Änderung dort auch hier nachziehen) ----------
+// 1:1 wie in app.js — siehe die Begründung dort. Für dieses externe Formular
+// zählt es doppelt: es wird typischerweise auf einem beliebigen fremden Handy
+// geöffnet, also gerade auch auf altem iOS.
 function uuid() {
-  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-  return "fxxxxxxxx".replace(/x/g, () => ((Math.random() * 16) | 0).toString(16));
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  const b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  b[6] = (b[6] & 0x0f) | 0x40;
+  b[8] = (b[8] & 0x3f) | 0x80;
+  const hex = Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+  return hex.slice(0, 8) + "-" + hex.slice(8, 12) + "-" + hex.slice(12, 16) +
+         "-" + hex.slice(16, 20) + "-" + hex.slice(20);
 }
 function escapeHtml(str) {
   if (str == null) return "";
