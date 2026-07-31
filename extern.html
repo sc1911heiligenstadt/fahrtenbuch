@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>🚐 Fahrtenbuch — Fahrt eintragen</title>
 <meta name="theme-color" content="#1a56a0" />
-<link rel="stylesheet" href="style.css?v=1.0" />
+<link rel="stylesheet" href="style.css?v=1.1" />
 </head>
 <body class="extern-page">
 
@@ -133,6 +133,54 @@
       </fieldset>
 
       <p class="muted hinweis-box" id="fx-hinweis"></p>
+
+      <!-- Information nach Art. 13 DSGVO, direkt ueber dem Absenden-Knopf.
+           Diese Seite ist login-los: wer hier eintraegt, hat kein Vereinskonto
+           und damit auch keinen anderen Ort, an dem er das nachlesen koennte. -->
+      <details class="ds-block">
+        <summary>Was mit Ihren Daten geschieht (Information nach Art. 13 DSGVO)</summary>
+        <div class="ds-inhalt">
+          <p><strong>Verantwortlich</strong> ist der 1. SC 1911 Heiligenstadt,
+          Leineberg 2, 37308 Heilbad Heiligenstadt, Telefon 03606 612206,
+          <a href="mailto:info@sc1911-heiligenstadt.de">info@sc1911-heiligenstadt.de</a>.</p>
+
+          <p><strong>Wozu und auf welcher Grundlage:</strong> Name, Fahrzeug,
+          Fahrtdaten und Unterschrift halten fest, wer das Vereinsfahrzeug wann
+          gefahren hat. Das brauchen wir als Halter, um Fahrten zuordnen zu
+          können — etwa bei einem Schaden oder einem Bußgeldbescheid
+          (Art. 6 Abs. 1 lit. f DSGVO). Die Führerscheinkopie dient dem
+          Nachweis, dass Sie zum Führen des Fahrzeugs berechtigt sind; dazu ist
+          der Halter verpflichtet (Art. 6 Abs. 1 lit. c DSGVO). Fotos von
+          Mängeln dokumentieren den Fahrzeugzustand.</p>
+
+          <p><strong>Wer die Daten erhält:</strong> Gespeichert wird auf Servern
+          in Deutschland, die ein Auftragsverarbeiter für uns betreibt. Die
+          Führerscheinkopie liegt in einem gesonderten Bereich und ist nur den
+          wenigen Personen zugänglich, die im Verein für die Fahrzeuge
+          zuständig sind — nicht allen Nutzern dieser Anwendung. Eine
+          Weitergabe nach außen erfolgt nur, wenn wir dazu verpflichtet sind
+          (etwa auf Anforderung einer Behörde nach einem Verkehrsverstoß).</p>
+
+          <p><strong>Wie lange:</strong> Fahrteinträge bewahren wir auf, solange
+          Ansprüche aus der Fahrt entstehen können und gesetzliche Fristen es
+          verlangen. Die Führerscheinkopie löschen wir, sobald Sie nicht mehr
+          für den Verein fahren.</p>
+
+          <p><strong>Ihre Rechte:</strong> Auskunft, Berichtigung, Löschung,
+          Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch
+          gegen die Verarbeitung. Wenden Sie sich dazu an die oben genannte
+          Anschrift. Beschweren können Sie sich beim Thüringer Landesbeauftragten
+          für den Datenschutz und die Informationsfreiheit.</p>
+
+          <p><strong>Pflichtangaben:</strong> Die mit * gekennzeichneten Felder
+          brauchen wir, um die Fahrt eintragen zu können. Ohne sie ist keine
+          Freigabe des Fahrzeugs möglich.</p>
+
+          <p>Ausführlich steht das in der
+          <a href="https://www.sc1911-heiligenstadt.de/datenschutz/" target="_blank" rel="noopener">Datenschutzerklärung
+          des Vereins</a>.</p>
+        </div>
+      </details>
 
       <div class="btn-row" style="margin-top:16px;">
         <button type="submit" class="btn success" id="btn-fx-submit">Fahrt eintragen</button>
