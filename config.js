@@ -107,66 +107,63 @@ const HINWEIS_ABSCHLUSS =
 
 const APP_CHANGELOG = [
   {
-    version: "1.2",
-    groups: [
-      {
-        title: "Bedienung am Handy",
-        items: [
-          "Eingabefelder sind am Handy mindestens 16 Pixel groß. Dadurch zoomt der iPhone-Browser beim Antippen eines Feldes nicht mehr ungefragt in die Seite hinein und bleibt danach verschoben stehen."
-        ]
-      }
-    ]
-  },
-  {
-    version: "1.1",
-    groups: [
-      {
-        title: "Foto-Upload auf älteren iPhones/iPads",
-        items: [
-          "Auf iOS-Geräten mit Safari älter als 15.4 schlug das Hochladen von Mängel-Fotos fehl („Ungültige Datei-Id“), weil die intern vergebene Id dort nicht im vom Server verlangten Format erzeugt wurde. Im externen Fahrten-Formular fielen die Fotos dabei sogar unbemerkt aus dem abgeschickten Datensatz. Die Id wird jetzt bei Bedarf selbst im richtigen Format erzeugt; auf neueren Geräten ändert sich nichts."
-        ]
-      }
-    ]
-  },
-  {
     version: "1.0",
     groups: [
       {
-        title: "Fahrtenbuch / Fahrer-Checkliste",
+        title: "Fahrer-Checkliste",
         items: [
-          "Löst die Papier-„Fahrer-Checkliste für SCH“ ab: jeder eingeloggte Fahrer erfasst seine Fahrt mit Fahrzeug- und Fahrtdaten (Kennzeichen, Insassen, Reiseziel, Kilometerstand, Datum/Uhrzeit, Übernahme/Übergabe).",
-          "Sicherheits-Checklisten vor und nach der Fahrt (gültiger Führerschein, Mindestalter, kein Alkohol, Verkehrssicherheit, Sichtkontrolle, vollgetankt, Reinigung) direkt zum Abhaken. Die Führerschein-Kopie selbst wird in Trainerdaten hinterlegt.",
-          "Mängel/Beschädigungen als Freitext plus Foto-Upload — die Fotos landen sicher im Vereins-Nextcloud, kein Verschicken per Mail mehr nötig.",
-          "Fahrt wird handschriftlich (Finger/Maus) unterschrieben und abgeschlossen.",
-          "Beim Abschließen sind alle Felder außer Mängel/Beschädigungen sowie alle Checklisten-Punkte Pflicht; eine begonnene Fahrt kann aber jederzeit als „offen“ zwischengespeichert und später abgeschlossen werden."
+          "Digitale Fassung der Papier-Checkliste für die Vereinsfahrzeuge: Kennzeichen, Insassen, Reiseziel, Kilometerstand, Datum und Uhrzeit, Übernahme und Übergabe.",
+          "Sicherheitspunkte vor und nach der Fahrt zum Abhaken: gültiger Führerschein, Mindestalter, kein Alkohol, Verkehrssicherheit, Sichtkontrolle, vollgetankt, Reinigung.",
+          "Mängel und Beschädigungen als Freitext samt Foto. Die Fotos landen in der Vereins-Nextcloud — nichts muss mehr per Mail verschickt werden.",
+          "Die Fahrt wird mit dem Finger oder der Maus unterschrieben und abgeschlossen.",
+          "Zum Abschließen sind alle Felder außer Mängel und alle Checklistenpunkte Pflicht. Eine begonnene Fahrt lässt sich aber jederzeit als offen zwischenspeichern und später fertigstellen.",
+          "Die Führerschein-Kopie selbst liegt nicht hier, sondern in den Trainerdaten."
         ]
       },
       {
         title: "Beleg einreichen",
         items: [
-          "Über einen Knopf direkt an der Fahrt lässt sich ein Tankbeleg o. Ä. beim Vereinsbudget-Tool einreichen — Fahrer, Datum und Zweck sind schon vorausgefüllt, nur noch Belegfoto anhängen und absenden.",
-          "Sobald ein Beleg eingegangen ist, zeigt die Fahrt eine Bestätigung mit Einreichdatum und einem „Anzeigen“-Knopf, der den eingereichten Beleg direkt im gewohnten Datei-Viewer öffnet."
+          "Direkt an der Fahrt lässt sich ein Tankbeleg beim Vereinsbudget einreichen — Fahrer, Datum und Zweck sind bereits ausgefüllt, es fehlt nur das Foto.",
+          "Ist ein Beleg eingegangen, zeigt die Fahrt eine Bestätigung mit Einreichdatum und einen Knopf, der den Beleg direkt öffnet."
         ]
       },
       {
-        title: "CSV-Export",
+        title: "Für Eltern ohne Vereinskonto",
         items: [
-          "Export der Fahrten-Liste als CSV — jedes Feld (Fahrzeug & Fahrt, Kilometerstand, Datum & Uhrzeit, Übernahme/Übergabe, Checklisten, Mängel & Status) einzeln per Checkbox wählbar, berücksichtigt die aktuelle Such-/Filter-Einstellung. Sichtbar nur für Admin und die Gruppe „Fahrtenbuch Bearbeiter“."
+          "Eine eigene Seite für Eltern, die gelegentlich ein Vereinsfahrzeug fahren — geschützt durch einen Zugriffscode statt durch eine Anmeldung.",
+          "Dieselben Felder wie im internen Formular: Kopfdaten, Sicherheitspunkte, Mängelfotos und Unterschrift, alles Pflicht.",
+          "Zusätzlich verpflichtend ist dort die Führerschein-Kopie. Sie wird abgeschottet gespeichert und ist nur für Administratoren und die Gruppe „Führerschein Einsicht“ einsehbar.",
+          "Externe Fahrten erscheinen sofort in der normalen Fahrtenliste, deutlich als extern gekennzeichnet."
         ]
       },
       {
-        title: "Externes Fahrtenbuch für Eltern",
+        title: "Export",
         items: [
-          "Eigenständige Seite („extern.html“) für Eltern ohne eigenes Vereinskonto, die gelegentlich ein Vereinsfahrzeug fahren — geschützt durch einen einfachen Zugriffscode statt Login.",
-          "Externe Fahrten enthalten dieselben Felder wie das interne Formular (Kopfdaten, Sicherheits-Checklisten, Mängelfotos, Unterschrift, alle Felder Pflicht) plus eine zusätzlich verpflichtende Führerschein-Kopie beim Eintragen — abgeschottet gespeichert, sichtbar nur für Admin und die Gruppe „Führerschein Einsicht“ über den Button „Führerschein ansehen“.",
-          "Externe Fahrten erscheinen sofort in der normalen Fahrten-Liste, deutlich mit einem „🔗 Extern“-Badge gekennzeichnet, und sind nur für Admin/„Fahrtenbuch Bearbeiter“ sicht- und verwaltbar."
+          "CSV-Export der Fahrtenliste, frei zusammenstellbar: Fahrzeug und Fahrt, Kilometerstand, Datum und Uhrzeit, Übernahme und Übergabe, Checklisten, Mängel und Status sind einzeln wählbar.",
+          "Der Export übernimmt die eingestellte Suche und Filterung."
         ]
       },
       {
-        title: "Rechte & Speicherung",
+        title: "Wer darf was",
         items: [
-          "Jeder eingeloggte Nutzer trägt und sieht seine eigenen Fahrten; Admin und die Gruppe „Fahrtenbuch Bearbeiter“ sehen und verwalten alle.",
-          "Automatische Nextcloud-Synchronisierung über die zentrale Anmeldung (Tools-Übersicht) — kein separates Passwort nötig."
+          "Jeder angemeldete Nutzer trägt seine eigenen Fahrten ein und sieht sie.",
+          "Bearbeiten: die Gruppe „Fahrtenbuch Bearbeiter“ und Administratoren sehen und verwalten alle Fahrten, einschließlich der externen, und nutzen den CSV-Export.",
+          "Den Führerschein aus einer externen Fahrt sehen nur Administratoren und die Gruppe „Führerschein Einsicht“.",
+          "Der Reiter „Info“ ist für alle sichtbar."
+        ]
+      },
+      {
+        title: "Bedienung am Handy",
+        items: [
+          "Die Ansicht ist für das Handy gebaut — die Fahrt lässt sich direkt am Fahrzeug eintragen, samt Foto und Unterschrift.",
+          "Eingabefelder sind mindestens 16 Pixel groß, damit der iPhone-Browser beim Antippen nicht ungefragt in die Seite hineinzoomt und verschoben stehen bleibt.",
+          "Der Foto-Upload funktioniert auch auf älteren iPhones und iPads: die interne Datei-Kennung wird notfalls selbst im geforderten Format erzeugt. Zuvor schlug der Upload dort mit „Ungültige Datei-Id“ fehl, im externen Formular fielen die Fotos sogar unbemerkt aus dem Datensatz."
+        ]
+      },
+      {
+        title: "Daten & Speicherung",
+        items: [
+          "Gespeichert wird in der Vereins-Nextcloud über die zentrale Anmeldung der Tools-Übersicht — ein eigenes Passwort braucht es nicht."
         ]
       }
     ]
