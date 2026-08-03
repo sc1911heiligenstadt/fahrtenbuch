@@ -1,13 +1,13 @@
 # Fahrtenbuch / Fahrer-Checkliste
 
 Digitale Ablösung der Papier-„Fahrer-Checkliste für SCH“ — Gateway-App der
-[ToolsUebersicht](https://tecko1985.github.io/ToolsUebersicht/)-Familie. Jeder
+[ToolsUebersicht](https://sc1911heiligenstadt.github.io/ToolsUebersicht/)-Familie. Jeder
 eingeloggte Nutzer (Fahrer) erfasst pro Fahrt mit einem Vereinsfahrzeug ein
 Fahrtenprotokoll mit Sicherheits-Checklisten und Unterschrift. Zusätzlich können
 Eltern ohne eigenes Vereinskonto über eine separate, zugriffscode-geschützte
 Seite (`extern.html`) Fahrten eintragen — siehe Abschnitt „Extern“.
 
-Live: https://tecko1985.github.io/fahrtenbuch/ · Extern: https://tecko1985.github.io/fahrtenbuch/extern.html
+Live: https://sc1911heiligenstadt.github.io/fahrtenbuch/ · Extern: https://sc1911heiligenstadt.github.io/fahrtenbuch/extern.html
 
 ## Funktionen
 
@@ -19,7 +19,7 @@ Live: https://tecko1985.github.io/fahrtenbuch/ · Extern: https://tecko1985.gith
 - **Checklisten:** gültiger Führerschein, Mindestalter, kein Alkohol, Verkehrs- und
   Betriebssicherheit, Sichtkontrolle, vollgetankt und Reinigung — direkt zum Abhaken.
   Die Führerschein-Kopie selbst wird in
-  [Trainerdaten](https://tecko1985.github.io/Trainerdaten/) hinterlegt, nicht hier.
+  [Trainerdaten](https://sc1911heiligenstadt.github.io/Trainerdaten/) hinterlegt, nicht hier.
 - **Rechte:** jeder eingeloggte Nutzer legt/sieht seine **eigenen** Fahrten;
   Admin und die Gruppe `fahrtenbuch-bearbeiter` sehen und verwalten **alle Fahrten**
   (serverseitig erzwungen, nicht nur in der Oberfläche versteckt).

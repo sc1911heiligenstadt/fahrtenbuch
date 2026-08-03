@@ -5,7 +5,7 @@ const APP_VERSION = "1.0";
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 // Ziel des "Beleg einreichen"-Knopfs (separates Repo/App, siehe CLAUDE.md).
-const BELEG_EINGANG_URL = "https://tecko1985.github.io/sc-heiligenstadt-budget/beleg-eingang.html";
+const BELEG_EINGANG_URL = "https://sc1911heiligenstadt.github.io/sc-heiligenstadt-budget/beleg-eingang.html";
 
 // Checklisten-Gruppen des Fahrer-Protokolls (1:1 aus der Papiervorlage). Jeder Eintrag
 // { key, label } wird als Checkbox gerendert; key ist zugleich das Feld im Fahrt-Datensatz.
