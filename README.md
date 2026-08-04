@@ -59,7 +59,7 @@ JSON nur die Referenz `{id, name, contentType}`). Die Unterschrift wird als klei
 PNG-DataURL inline gespeichert.
 
 Dateien: `index.html`, `app.js`, `config.js`, `db.js`, `signature-pad.js`, `style.css`,
-`logo.png`, plus `extern.html`/`extern.js`/`db-extern.js` für die externe Variante
+plus `extern.html`/`extern.js`/`db-extern.js` für die externe Variante
 (siehe „Extern“). `db.js` ist aus `digitaler-stempel` übernommen (nur App-Id angepasst),
 `signature-pad.js` aus `trainerkodex`/`TrainerCheckliste`.
 
