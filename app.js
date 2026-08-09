@@ -28,7 +28,6 @@ function escapeHtml(str) {
 }
 function val(id) { const el = document.getElementById(id); return el ? el.value : ""; }
 function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = v == null ? "" : v; }
-function setChk(id, v) { const el = document.getElementById(id); if (el) el.checked = !!v; }
 
 const WOCHENTAGE_KURZ = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 function fmtDatum(iso) {
@@ -43,11 +42,6 @@ function fmtTimestamp(iso) {
   const d = new Date(iso);
   return isNaN(d.getTime()) ? "—" : d.toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" });
 }
-function fmtDate(d) {
-  if (!(d instanceof Date) || isNaN(d.getTime())) return "—";
-  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
-}
-
 const STATUS_LABEL = { offen: "offen", abgeschlossen: "abgeschlossen" };
 const STATUS_FARBE = { offen: "#c9941f", abgeschlossen: "#2d8c4e" };
 
@@ -55,7 +49,6 @@ const STATUS_FARBE = { offen: "#c9941f", abgeschlossen: "#2d8c4e" };
 let appData = { meta: {}, fahrten: [] };
 let currentUser = null;
 let currentTab = "fahrten";
-let persistTimer = null;
 
 let editingFahrtId = null;           // null = neue Fahrt
 let editingFotos = [];               // [{id,name,contentType}] – Arbeitskopie
@@ -564,13 +557,7 @@ function setSaveStatus(text, kind) {
   el.textContent = text;
   el.className = "header-status" + (kind ? " is-" + kind : "");
 }
-function persist() {
-  clearTimeout(persistTimer);
-  setSaveStatus("Änderung noch nicht gespeichert…", "pending");
-  ungespeicherteAenderungen = true;
-  persistTimer = setTimeout(doPersist, 300);
-}
-async function saveNow() { clearTimeout(persistTimer); return doPersist(); }
+async function saveNow() { return doPersist(); }
 
 // Es darf immer nur EIN dav-save unterwegs sein. gatewayRev (das ETag, mit dem der
 // Worker Konflikte erkennt) wird erst aktualisiert, wenn ein Save zurückkommt —
