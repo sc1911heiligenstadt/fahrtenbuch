@@ -107,6 +107,20 @@ const HINWEIS_ABSCHLUSS =
 
 const APP_CHANGELOG = [
   {
+    version: "1.1",
+    groups: [
+      {
+        title: "Mannschaften kommen jetzt aus der einen Vereinsliste",
+        items: [
+          "Das Feld „Abteilung / Mannschaft“ schlägt beim Tippen die echten Mannschaften des Vereins vor — dieselbe Liste, die in der Tools-Übersicht gepflegt wird.",
+          "Damit steht dieselbe Mannschaft in allen Fahrten gleich geschrieben, und die Suche findet sie zuverlässig.",
+          "Ein eigener Eintrag bleibt möglich: Fahrten für Vorstand, Zeugwart oder eine Vereinsfahrt lassen sich weiterhin frei eintippen.",
+          "Im Formular für Eltern ohne Vereinskonto bleibt das Feld ein reines Textfeld — dort gibt es keine Anmeldung und damit keinen Zugriff auf die Liste."
+        ]
+      }
+    ]
+  },
+  {
     version: "1.0",
     groups: [
       {

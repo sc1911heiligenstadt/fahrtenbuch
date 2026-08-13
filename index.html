@@ -133,7 +133,10 @@
             <div class="form-grid">
               <div class="form-field"><label>Kennzeichen *</label><input type="text" id="ff-kennzeichen" placeholder="z. B. EIC-SC 191" required /></div>
               <div class="form-field"><label>Name des Fahrers *</label><input type="text" id="ff-fahrer" required /></div>
-              <div class="form-field"><label>Abteilung / Mannschaft *</label><input type="text" id="ff-abteilung" placeholder="z. B. C-Jugend" required /></div>
+              <!-- datalist: die Mannschaften des Vereins zur Auswahl, aber ein
+                   freier Name bleibt möglich. Gefahren wird auch für Dinge, die
+                   keine Mannschaft sind (Vorstand, Zeugwart, Vereinsfahrt). -->
+              <div class="form-field"><label>Abteilung / Mannschaft *</label><input type="text" id="ff-abteilung" list="vereins-mannschaften" placeholder="z. B. C-Jugend" autocomplete="off" required /><datalist id="vereins-mannschaften"></datalist></div>
               <div class="form-field"><label>Anzahl der Insassen *</label><input type="number" id="ff-insassen" min="0" inputmode="numeric" required /></div>
               <div class="form-field wide"><label>Reiseziel *</label><input type="text" id="ff-reiseziel" placeholder="z. B. Mühlhausen" required /></div>
             </div>
@@ -232,9 +235,9 @@
     </div>
   </div>
 
-  <script src="config.js?v=1.4"></script>
-  <script src="db.js?v=1.1"></script>
+  <script src="config.js?v=1.5"></script>
+  <script src="db.js?v=1.2"></script>
   <script src="signature-pad.js?v=1.0"></script>
-  <script src="app.js?v=1.5"></script>
+  <script src="app.js?v=1.6"></script>
 </body>
 </html>

@@ -110,6 +110,33 @@ async function fetchMe() {
   return gatewayRequest({ action: "me", app: GATEWAY_APP_ID });
 }
 
+// Die Mannschaften des Vereins aus der zentralen Liste (seit 2026-08-12).
+//
+// ⚠️ GETEILTER FLOTTEN-BAUSTEIN. Wortgleich in busplan/db.js, Materialliste/db.js,
+// spielertool-test/db.js und kadermanager/db.js -- es gibt keinen Build-Step,
+// also wird kopiert. Wer eine Fassung aendert, zieht die anderen mit.
+//
+// ⚠️ NUR fuer index.html. extern.html hat keinen Login und damit kein Token --
+// dort bleibt das Feld ein reines Textfeld (siehe db-extern.js).
+//
+// ⚠️ Wirft nicht nach oben durch. Ohne die Liste laeuft die App wie vorher
+// weiter; sie ist Komfort, keine Voraussetzung.
+async function fetchVereinsMannschaften() {
+  try {
+    if (!getSessionToken()) return [];
+    const body = await gatewayRequest({ action: "mannschaften-load" });
+    const teams = (body && Array.isArray(body.teams)) ? body.teams : [];
+    // Archivierte sind aufgeloeste Mannschaften -- die soll niemand mehr neu
+    // anlegen; vorhandene Eintraege bleiben davon unberuehrt.
+    return teams
+      .filter((t) => t && t.kurz && !t.archiviert)
+      .map((t) => ({ kurz: String(t.kurz), lang: String(t.lang || t.kurz), liga: String(t.liga || "") }));
+  } catch (e) {
+    console.warn("Vereins-Mannschaftsliste nicht ladbar", e);
+    return [];
+  }
+}
+
 // Liefert {belege:[{submittedAt,amount,desc,name,files:[{fileName,fileMime}]}]} für über den
 // Beleg-Knopf eingereichte Belege zu dieser Fahrt (leer, wenn keiner gefunden wurde).
 async function gatewayListBelege(fahrtId) {
