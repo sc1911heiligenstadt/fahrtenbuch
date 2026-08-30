@@ -107,6 +107,18 @@ const HINWEIS_ABSCHLUSS =
 
 const APP_CHANGELOG = [
   {
+    version: "1.4",
+    groups: [
+      {
+        title: "Wenn ein Foto nicht gelöscht werden kann, steht das jetzt da",
+        items: [
+          "Werden Schadensfotos entfernt — beim Speichern, beim Löschen einer Fahrt oder beim Verwerfen —, verschwinden sie auch aus der Vereins-Cloud. Schlug das fehl, passierte bisher nichts Sichtbares: die Fahrt war weg, die Fotos lagen aber weiter dort.",
+          "Jetzt erscheint ein Hinweis, wie viele Fotos liegen geblieben sind. Der Vorgang selbst läuft weiter und wartet nicht darauf."
+        ]
+      }
+    ]
+  },
+  {
     version: "1.3",
     groups: [
       {

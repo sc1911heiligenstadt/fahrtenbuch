@@ -338,12 +338,31 @@ async function loadBelegStatus(fahrtId, statusEl) {
     });
   } catch (_) { /* rein informative Anzeige, darf still fehlschlagen */ }
 }
+// Nicht mehr gebrauchte Fotos aus der Vereins-Cloud nehmen. Der Vorgang läuft
+// weiter, auch wenn das scheitert -- eine verwaiste Datei darf das Speichern
+// oder Löschen nicht aufhalten. Sichtbar werden muss der Fehlschlag trotzdem:
+// sonst bleiben Fotos in der Cloud liegen, von denen niemand mehr weiß, und
+// niemand kann sie aufräumen.
+// Bewusst ohne await aufgerufen wie vorher -- die Meldung kommt nach, der
+// Ablauf wartet nicht darauf.
+// Bugjagd 2026-08-30: an allen drei Aufrufstellen stand ein leeres .catch().
+function loescheFotosNebenbei(ids, vorgangGetan) {
+  const offen = (ids || []).filter(Boolean);
+  if (!offen.length) return;
+  const liegengeblieben = [];
+  Promise.all(offen.map((id) => gatewayDeleteFile(id).catch(() => { liegengeblieben.push(id); })))
+    .then(() => {
+      if (!liegengeblieben.length) return;
+      alert(vorgangGetan + " In der Vereins-Cloud liegen geblieben: "
+        + liegengeblieben.length + (liegengeblieben.length === 1 ? " Foto." : " Fotos."));
+    });
+}
+
 async function closeFahrt(discardUploads) {
   document.getElementById("fahrt-modal").classList.add("hidden");
   if (discardUploads && addedFotoIds.length) {
     // In dieser Sitzung hochgeladene, aber nie gespeicherte Fotos wieder entfernen.
-    const ids = addedFotoIds.slice();
-    ids.forEach((id) => { gatewayDeleteFile(id).catch(() => {}); });
+    loescheFotosNebenbei(addedFotoIds.slice(), "Die Fahrt wurde verworfen.");
   }
   editingFahrtId = null; editingFotos = []; originalFotoIds = []; addedFotoIds = [];
 }
@@ -390,7 +409,7 @@ async function saveFahrt(status) {
   // Fotos abgleichen: entfernte (Original oder in dieser Sitzung hochgeladen) löschen.
   const keepIds = editingFotos.map((f) => f.id);
   const toDelete = originalFotoIds.concat(addedFotoIds).filter((id, i, a) => a.indexOf(id) === i && !keepIds.includes(id));
-  toDelete.forEach((id) => { gatewayDeleteFile(id).catch(() => {}); });
+  loescheFotosNebenbei(toDelete, "Die Fahrt wurde gespeichert.");
   fahrt.maengelFotos = editingFotos.map((f) => ({ id: f.id, name: f.name, contentType: f.contentType }));
 
   addedFotoIds = []; // gespeichert -> nicht mehr als "unbestätigt" behandeln
@@ -403,7 +422,7 @@ async function deleteFahrt() {
   const fahrt = appData.fahrten.find((f) => f.id === editingFahrtId);
   if (!fahrt || !canManageFahrt(fahrt)) return;
   if (!confirm("Diese Fahrt wirklich löschen?")) return;
-  fahrt.maengelFotos.forEach((f) => { gatewayDeleteFile(f.id).catch(() => {}); });
+  loescheFotosNebenbei(fahrt.maengelFotos.map((f) => f.id), "Die Fahrt wurde gelöscht.");
   appData.fahrten = appData.fahrten.filter((f) => f.id !== editingFahrtId);
   addedFotoIds = []; // beim Löschen nichts extra aufräumen (Original-Fotos sind oben dran)
   await closeFahrt(false);
