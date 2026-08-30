@@ -29,13 +29,13 @@ function getSessionToken() {
 
 async function gatewayRequest(payload) {
   const token = getSessionToken();
-  if (!token) throw new NotLoggedInError();
+  if (!token) { if (typeof raeumeBeiSitzungsverlust === "function") raeumeBeiSitzungsverlust(); throw new NotLoggedInError(); }
   const resp = await fetch(GATEWAY_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
     body: JSON.stringify(payload)
   });
-  if (resp.status === 401) throw new NotLoggedInError("Sitzung abgelaufen");
+  if (resp.status === 401) { if (typeof raeumeBeiSitzungsverlust === "function") raeumeBeiSitzungsverlust(); throw new NotLoggedInError("Sitzung abgelaufen"); }
   if (resp.status === 403) throw new Error("Kein Zugriff auf dieses Tool.");
   if (resp.status === 409) throw new ConflictError();
   if (!resp.ok) {
@@ -146,13 +146,13 @@ async function gatewayListBelege(fahrtId) {
 // Holt eine einzelne eingereichte Beleg-Datei als Blob, für den "Beleg anzeigen"-Knopf.
 async function gatewayFetchBelegBlob(fahrtId, fileName) {
   const token = getSessionToken();
-  if (!token) throw new NotLoggedInError();
+  if (!token) { if (typeof raeumeBeiSitzungsverlust === "function") raeumeBeiSitzungsverlust(); throw new NotLoggedInError(); }
   const resp = await fetch(GATEWAY_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
     body: JSON.stringify({ action: "fahrtenbuch-beleg-file-get", app: GATEWAY_APP_ID, fahrtId, fileName })
   });
-  if (resp.status === 401) throw new NotLoggedInError("Sitzung abgelaufen");
+  if (resp.status === 401) { if (typeof raeumeBeiSitzungsverlust === "function") raeumeBeiSitzungsverlust(); throw new NotLoggedInError("Sitzung abgelaufen"); }
   if (!resp.ok) throw new Error("Beleg nicht abrufbar (HTTP " + resp.status + ")");
   return resp.blob();
 }
@@ -201,13 +201,13 @@ async function gatewayDeleteFile(id) {
 // ist nicht öffentlich). Rückgabe eignet sich für URL.createObjectURL.
 async function gatewayFetchFileBlob(id) {
   const token = getSessionToken();
-  if (!token) throw new NotLoggedInError();
+  if (!token) { if (typeof raeumeBeiSitzungsverlust === "function") raeumeBeiSitzungsverlust(); throw new NotLoggedInError(); }
   const resp = await fetch(GATEWAY_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
     body: JSON.stringify({ action: "dav-file-get", app: GATEWAY_APP_ID, id })
   });
-  if (resp.status === 401) throw new NotLoggedInError("Sitzung abgelaufen");
+  if (resp.status === 401) { if (typeof raeumeBeiSitzungsverlust === "function") raeumeBeiSitzungsverlust(); throw new NotLoggedInError("Sitzung abgelaufen"); }
   if (!resp.ok) throw new Error("Datei nicht abrufbar (HTTP " + resp.status + ")");
   return resp.blob();
 }
