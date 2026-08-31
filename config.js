@@ -107,6 +107,18 @@ const HINWEIS_ABSCHLUSS =
 
 const APP_CHANGELOG = [
   {
+    version: "1.5",
+    groups: [
+      {
+        title: "Der Reiter „Info“ erklärt jetzt, was die App wirklich tut",
+        items: [
+          "Im Reiter „Info“ stand bisher überhaupt keine Beschreibung — nur die Überschrift. Jetzt steht da, wofür das Fahrtenbuch da ist, was die Checkliste abfragt und wie Eltern ohne Vereinskonto ihre Fahrt eintragen.",
+          "Am Funktionsumfang ändert sich nichts — nur an der Beschreibung."
+        ]
+      }
+    ]
+  },
+  {
     version: "1.4",
     groups: [
       {
