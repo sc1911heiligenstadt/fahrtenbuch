@@ -1,0 +1,11 @@
+# Seed/Test-Daten mit echten Personendaten -> niemals committen (nur Cloud)
+*.seed.json
+seed*.json
+
+# Lokale Test-Artefakte (Fotos/Führerschein-Kopien beim Ausprobieren)
+test-*.jpg
+test-*.png
+test-*.pdf
+
+# Lokales Claude-Projektgedächtnis, nicht Teil des öffentlichen Repos
+CLAUDE.md

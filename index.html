@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🚐 Fahrtenbuch</title>
+<meta name="theme-color" content="#1a56a0" />
+<link rel="stylesheet" href="style.css?v=1.0" />
+</head>
+<body>
+
+  <div class="connect-screen" id="connect-screen">
+    <div class="card">
+      <h2>🚐 Fahrtenbuch</h2>
+      <p id="connect-message">Bitte über die Tools-Übersicht anmelden, um das Fahrtenbuch zu nutzen.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://sc1911heiligenstadt.github.io/ToolsUebersicht/">Zur Tools-Übersicht</a>
+      </div>
+      <p class="muted" id="cloud-error" style="margin-top:14px;"></p>
+    </div>
+  </div>
+
+  <div id="app-shell" style="display:none;">
+    <header>
+      <h1>🚐 Fahrtenbuch</h1>
+      <a href="https://sc1911heiligenstadt.github.io/ToolsUebersicht/" class="back-to-dashboard">← Zurück zum Dashboard</a>
+      <div class="header-right">
+        <span class="header-status" id="save-status"></span>
+        <span class="header-user" id="header-user"></span>
+        <img class="header-logo" src="https://sc1911heiligenstadt.github.io/logo.svg" alt="1. SC 1911 Heiligenstadt e.V." />
+      </div>
+    </header>
+
+    <nav>
+      <button data-tab="fahrten" class="active">Fahrten</button>
+      <button data-tab="info" style="margin-left:auto;">Info</button>
+    </nav>
+
+    <main>
+
+      <!-- ---------- Fahrten ---------- -->
+      <section class="tab-section active" id="tab-fahrten">
+        <div class="toolbar">
+          <div class="filter-bar" id="fahrten-filter" style="margin-bottom:0;">
+            <input type="search" id="fahrten-search" placeholder="Suche nach Reiseziel / Mannschaft / Kennzeichen…" />
+            <select id="fahrten-fahrer" class="editor-only hidden"><option value="">Alle Fahrer</option></select>
+            <span class="filter-count" id="fahrten-count"></span>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn small secondary editor-only hidden" id="btn-export-toggle">CSV-Export…</button>
+            <button class="btn small success" id="btn-new-fahrt">+ Neue Fahrt</button>
+          </div>
+        </div>
+        <div id="export-panel" class="card editor-only hidden" style="display:none;">
+          <div class="toolbar" style="margin-bottom:10px;">
+            <h3 style="margin:0;">CSV-Export – Felder auswählen</h3>
+            <div class="toolbar-right">
+              <button class="btn secondary small" id="btn-export-felder-alle">Alle</button>
+              <button class="btn secondary small" id="btn-export-felder-keine">Keine</button>
+            </div>
+          </div>
+          <div id="export-field-groups"></div>
+          <p class="muted" id="export-info-line" style="margin:10px 0 14px;"></p>
+          <button class="btn success small" id="btn-export-csv">CSV exportieren</button>
+        </div>
+        <div class="card">
+          <div class="list-rows" id="fahrten-list"></div>
+          <div class="empty-state hidden" id="fahrten-empty">Noch keine Fahrten erfasst — oben „+ Neue Fahrt“ anlegen.</div>
+        </div>
+      </section>
+
+      <!-- ---------- Info ---------- -->
+      <section class="tab-section" id="tab-info">
+        <div class="card">
+          <h2>Über das Fahrtenbuch <span class="version-badge" id="version-badge-2"></span></h2>
+          <p class="muted">
+            Die digitale Fahrer-Checkliste für die Vereinsfahrzeuge: vor der Fahrt die
+            Sicherheitspunkte durchgehen, Fahrzeug- und Fahrtdaten erfassen, Mängel mit Fotos
+            melden und unterschreiben. So steht später fest, in welchem Zustand ein Fahrzeug
+            übernommen und zurückgegeben wurde. Eltern ohne Vereinskonto tragen ihre Fahrt über
+            die externe Seite ein und laden dort die Führerschein-Kopie mit hoch.
+          </p>
+          <div class="form-grid" id="meta-view"></div>
+          <p class="muted" id="einstellungen-user" style="margin-top:10px;"></p>
+        </div>
+        <div class="card">
+          <h2>Änderungen</h2>
+          <div id="changelog-list"></div>
+        </div>
+      
+      <div class="card" id="ds-info-karte">
+        <h2>Datenschutz</h2>
+        <p>Dieses Werkzeug gehört zu den internen Anwendungen des
+        1. SC 1911 Heiligenstadt. Die hier erfassten Daten werden
+        ausschließlich für die Vereinsarbeit verwendet und liegen auf Servern
+        in Deutschland, die ein Auftragsverarbeiter für den Verein betreibt.
+        Eine Weitergabe an Dritte findet nur statt, soweit sie für den
+        jeweiligen Zweck erforderlich oder gesetzlich vorgeschrieben ist.</p>
+        <p>Verantwortlich ist der 1. SC 1911 Heiligenstadt, Leineberg 2,
+        37308 Heilbad Heiligenstadt, Telefon 03606 612206,
+        <a href="mailto:info@sc1911-heiligenstadt.de">info@sc1911-heiligenstadt.de</a>.
+        Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
+        Datenübertragbarkeit und Widerspruch lassen sich unter dieser
+        Anschrift geltend machen. Beschwerden nimmt der Thüringer
+        Landesbeauftragte für den Datenschutz und die Informationsfreiheit
+        entgegen.</p>
+        <p><a href="https://www.sc1911-heiligenstadt.de/datenschutz/" target="_blank" rel="noopener">Datenschutzerklärung des Vereins</a>
+        &middot;
+        <a href="https://www.sc1911-heiligenstadt.de/impressum-2/" target="_blank" rel="noopener">Impressum</a></p>
+      </div>
+</section>
+
+    </main>
+  </div>
+
+  <!-- ---------- Fahrt-Formular (großes Modal) ---------- -->
+  <div class="modal-overlay hidden" id="fahrt-modal">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h2 id="fahrt-modal-title">Neue Fahrt</h2>
+        <button class="modal-close" id="fahrt-modal-close" aria-label="Schließen">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="extern-info hidden" id="ff-extern-info">
+          <span class="badge-extern">🔗 Extern eingetragen</span>
+          <button type="button" class="btn small secondary hidden" id="btn-view-fuehrerschein">Führerschein ansehen</button>
+        </div>
+        <div class="extern-info hidden" id="ff-beleg-info">
+          <button type="button" class="btn small secondary" id="btn-submit-beleg">🧾 Beleg einreichen</button>
+          <span class="muted" id="ff-beleg-status"></span>
+        </div>
+        <form id="fahrt-form" autocomplete="off" novalidate>
+
+          <p class="muted" style="margin:0 0 12px;">* Pflichtfeld — zum Abschließen der Fahrt müssen alle
+            Pflichtfelder ausgefüllt, alle Checklisten-Punkte abgehakt und die Unterschrift geleistet sein.
+            Zwischenspeichern ist auch mit unvollständigen Angaben möglich.</p>
+
+          <fieldset class="form-fieldset">
+            <legend>Fahrzeug &amp; Fahrt</legend>
+            <div class="form-grid">
+              <div class="form-field"><label>Kennzeichen *</label><input type="text" id="ff-kennzeichen" placeholder="z. B. EIC-SC 191" required /></div>
+              <div class="form-field"><label>Name des Fahrers *</label><input type="text" id="ff-fahrer" required /></div>
+              <!-- datalist: die Mannschaften des Vereins zur Auswahl, aber ein
+                   freier Name bleibt möglich. Gefahren wird auch für Dinge, die
+                   keine Mannschaft sind (Vorstand, Zeugwart, Vereinsfahrt). -->
+              <div class="form-field"><label>Abteilung / Mannschaft *</label><input type="text" id="ff-abteilung" list="vereins-mannschaften" placeholder="z. B. C-Jugend" autocomplete="off" required /><datalist id="vereins-mannschaften"></datalist></div>
+              <div class="form-field"><label>Anzahl der Insassen *</label><input type="number" id="ff-insassen" min="0" inputmode="numeric" required /></div>
+              <div class="form-field wide"><label>Reiseziel *</label><input type="text" id="ff-reiseziel" placeholder="z. B. Mühlhausen" required /></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>Kilometerstand</legend>
+            <div class="form-grid">
+              <div class="form-field"><label>Start *</label><input type="number" id="ff-kmstart" min="0" inputmode="numeric" required /></div>
+              <div class="form-field"><label>Ende *</label><input type="number" id="ff-kmende" min="0" inputmode="numeric" required /></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>Datum &amp; Uhrzeit</legend>
+            <div class="form-grid">
+              <div class="form-field"><label>Datum Start *</label><input type="date" id="ff-datumstart" required /></div>
+              <div class="form-field"><label>Uhrzeit Start *</label><input type="time" id="ff-uhrzeitstart" required /></div>
+              <div class="form-field"><label>Datum Ende *</label><input type="date" id="ff-datumende" required /></div>
+              <div class="form-field"><label>Uhrzeit Ende *</label><input type="time" id="ff-uhrzeitende" required /></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>Übernahme / Übergabe</legend>
+            <div class="form-grid">
+              <div class="form-field"><label>Übernahme von *</label><input type="text" id="ff-uebernahme" required /></div>
+              <div class="form-field"><label>Abholort *</label><input type="text" id="ff-abholort" required /></div>
+              <div class="form-field"><label>Übergabe an *</label><input type="text" id="ff-uebergabe" required /></div>
+              <div class="form-field"><label>Abstellort *</label><input type="text" id="ff-abstellort" required /></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>Anforderungen an den Fahrer</legend>
+            <div class="check-col" id="ff-anforderungen"></div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>Fahrzeugkontrolle vor der Fahrt</legend>
+            <div class="check-col" id="ff-kontrolle-vor"></div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>Mängel / Beschädigungen (optional)</legend>
+            <div class="form-field wide">
+              <textarea id="ff-maengel" rows="3" placeholder="Beschädigungen beschreiben (falls vorhanden)…"></textarea>
+            </div>
+            <label class="mini-label">Fotos</label>
+            <div class="foto-list" id="ff-foto-list"></div>
+            <div class="btn-row" style="justify-content:flex-start;margin-top:8px;">
+              <button type="button" class="btn small secondary" id="btn-foto-upload">Foto hinzufügen…</button>
+              <input type="file" id="ff-foto-input" accept="image/*" multiple class="hidden" />
+            </div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>Nach der Fahrt</legend>
+            <div class="check-col" id="ff-kontrolle-nach"></div>
+          </fieldset>
+
+          <fieldset class="form-fieldset">
+            <legend>Unterschrift des Fahrers</legend>
+            <div class="signature-wrap">
+              <canvas id="ff-signature" class="signature-canvas"></canvas>
+            </div>
+            <div class="btn-row" style="justify-content:flex-start;margin-top:6px;">
+              <button type="button" class="btn small secondary" id="btn-signature-clear">Unterschrift löschen</button>
+            </div>
+          </fieldset>
+
+          <p class="muted hinweis-box">ℹ️ <span id="ff-hinweis"></span></p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn danger hidden" id="btn-delete-fahrt">Löschen</button>
+        <div class="btn-row">
+          <button class="btn secondary" id="btn-cancel-fahrt">Abbrechen</button>
+          <button class="btn" id="btn-save-fahrt-offen">Zwischenspeichern</button>
+          <button class="btn success" id="btn-save-fahrt-abschluss">Fahrt abschließen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- Bild-/Datei-Viewer ---------- -->
+  <div class="modal-overlay hidden" id="viewer-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="viewer-title">Datei</h2>
+        <button class="modal-close" id="viewer-close" aria-label="Schließen">×</button>
+      </div>
+      <div class="modal-body" id="viewer-body" style="text-align:center;">
+        <p class="muted" id="viewer-loading">Wird geladen…</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js?v=1.0"></script>
+  <script src="db.js?v=1.0"></script>
+  <script src="signature-pad.js?v=1.0"></script>
+  <script src="app.js?v=1.0"></script>
+</body>
+</html>
