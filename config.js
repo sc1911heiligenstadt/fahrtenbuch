@@ -107,69 +107,6 @@ const HINWEIS_ABSCHLUSS =
 
 const APP_CHANGELOG = [
   {
-    version: "1.5",
-    groups: [
-      {
-        title: "Der Reiter „Info“ erklärt jetzt, was die App wirklich tut",
-        items: [
-          "Im Reiter „Info“ stand bisher überhaupt keine Beschreibung — nur die Überschrift. Jetzt steht da, wofür das Fahrtenbuch da ist, was die Checkliste abfragt und wie Eltern ohne Vereinskonto ihre Fahrt eintragen.",
-          "Am Funktionsumfang ändert sich nichts — nur an der Beschreibung."
-        ]
-      }
-    ]
-  },
-  {
-    version: "1.4",
-    groups: [
-      {
-        title: "Wenn ein Foto nicht gelöscht werden kann, steht das jetzt da",
-        items: [
-          "Werden Schadensfotos entfernt — beim Speichern, beim Löschen einer Fahrt oder beim Verwerfen —, verschwinden sie auch aus der Vereins-Cloud. Schlug das fehl, passierte bisher nichts Sichtbares: die Fahrt war weg, die Fotos lagen aber weiter dort.",
-          "Jetzt erscheint ein Hinweis, wie viele Fotos liegen geblieben sind. Der Vorgang selbst läuft weiter und wartet nicht darauf."
-        ]
-      }
-    ]
-  },
-  {
-    version: "1.3",
-    groups: [
-      {
-        title: "Beim Sitzungsende wird auch alles neben der Seite geräumt",
-        items: [
-          "Beim Sitzungsende wurde die Seite bereits geleert. Der Fahrt-Dialog und die Beleg-Ansicht stehen aber daneben und blieben mit Namen und Eingaben stehen. Jetzt werden sie mitgeleert.",
-          "Der Hinweis erscheint außerdem an jeder Stelle, an der die Anmeldung wegfällt — vorher nur bei einem Teil der Wege."
-        ]
-      }
-    ]
-  },
-  {
-    version: "1.2",
-    groups: [
-      {
-        title: "Beim Abmelden bleibt nichts stehen",
-        items: [
-          "Läuft die Anmeldung ab, während die App offen ist — zum Beispiel weil ein Speichern nach längerer Pause fehlschlägt —, erscheint wie bisher der Hinweis „bitte neu anmelden“.",
-          "Neu ist: der Bildschirm dahinter wird jetzt auch geleert. Vorher wurde er nur unsichtbar gemacht, und alles Angezeigte blieb im Browser stehen — sichtbar für jeden, der sich an denselben Rechner setzt und nachschaut.",
-          "Für dich ändert sich nichts: der Weg zurück war schon immer ein Neuladen der Seite."
-        ]
-      }
-    ]
-  },
-  {
-    version: "1.1",
-    groups: [
-      {
-        title: "Mannschaften kommen jetzt aus der einen Vereinsliste",
-        items: [
-          "Das Feld „Abteilung / Mannschaft“ schlägt beim Tippen die echten Mannschaften des Vereins vor — dieselbe Liste, die in der Tools-Übersicht gepflegt wird.",
-          "Damit steht dieselbe Mannschaft in allen Fahrten gleich geschrieben, und die Suche findet sie zuverlässig.",
-          "Ein eigener Eintrag bleibt möglich: Fahrten für Vorstand, Zeugwart oder eine Vereinsfahrt lassen sich weiterhin frei eintippen.",
-          "Im Formular für Eltern ohne Vereinskonto bleibt das Feld ein reines Textfeld — dort gibt es keine Anmeldung und damit keinen Zugriff auf die Liste."
-        ]
-      }
-    ]
-  },
-  {
     version: "1.0",
     groups: [
       {
@@ -177,10 +114,17 @@ const APP_CHANGELOG = [
         items: [
           "Digitale Fassung der Papier-Checkliste für die Vereinsfahrzeuge: Kennzeichen, Insassen, Reiseziel, Kilometerstand, Datum und Uhrzeit, Übernahme und Übergabe.",
           "Sicherheitspunkte vor und nach der Fahrt zum Abhaken: gültiger Führerschein, Mindestalter, kein Alkohol, Verkehrssicherheit, Sichtkontrolle, vollgetankt, Reinigung.",
-          "Mängel und Beschädigungen als Freitext samt Foto. Die Fotos landen in der Vereins-Nextcloud — nichts muss mehr per Mail verschickt werden.",
           "Die Fahrt wird mit dem Finger oder der Maus unterschrieben und abgeschlossen.",
           "Zum Abschließen sind alle Felder außer Mängel und alle Checklistenpunkte Pflicht. Eine begonnene Fahrt lässt sich aber jederzeit als offen zwischenspeichern und später fertigstellen.",
           "Die Führerschein-Kopie selbst liegt nicht hier, sondern in den Trainerdaten."
+        ]
+      },
+      {
+        title: "Mängel und Fotos",
+        items: [
+          "Mängel und Beschädigungen als Freitext samt Foto. Ein Mangel gehört zur Fahrt und bleibt dem Fahrzeug zugeordnet, statt in einer eigenen Liste zu landen.",
+          "Die Fotos liegen in der Vereins-Nextcloud — nichts muss mehr per Mail verschickt werden.",
+          "Wird eine Fahrt gelöscht oder ein Foto entfernt, verschwindet es auch dort. Klappt das nicht, sagt die App, wie viele Fotos liegen geblieben sind, statt es stillschweigend zu übergehen."
         ]
       },
       {
@@ -200,10 +144,19 @@ const APP_CHANGELOG = [
         ]
       },
       {
+        title: "Mannschaften aus der einen Vereinsliste",
+        items: [
+          "Das Feld „Abteilung / Mannschaft“ schlägt beim Tippen die echten Mannschaften des Vereins vor — dieselbe Liste, die in der Tools-Übersicht gepflegt wird.",
+          "Damit steht dieselbe Mannschaft in allen Fahrten gleich geschrieben, und die Suche findet sie zuverlässig.",
+          "Ein eigener Eintrag bleibt möglich: Fahrten für Vorstand, Zeugwart oder eine Vereinsfahrt lassen sich weiterhin frei eintippen.",
+          "Im Formular für Eltern ohne Vereinskonto bleibt das Feld ein reines Textfeld — dort gibt es keine Anmeldung und damit keinen Zugriff auf die Liste."
+        ]
+      },
+      {
         title: "Export",
         items: [
           "CSV-Export der Fahrtenliste, frei zusammenstellbar: Fahrzeug und Fahrt, Kilometerstand, Datum und Uhrzeit, Übernahme und Übergabe, Checklisten, Mängel und Status sind einzeln wählbar.",
-          "Der Export übernimmt die eingestellte Suche und Filterung."
+          "Der Export übernimmt die eingestellte Suche und Filterung; darüber steht, wie viele Fahrten und wie viele Felder gerade gewählt sind."
         ]
       },
       {
@@ -212,7 +165,8 @@ const APP_CHANGELOG = [
           "Jeder angemeldete Nutzer trägt seine eigenen Fahrten ein und sieht sie.",
           "Bearbeiten: die Gruppe „Fahrtenbuch Bearbeiter“ und Administratoren sehen und verwalten alle Fahrten, einschließlich der externen, und nutzen den CSV-Export.",
           "Den Führerschein aus einer externen Fahrt sehen nur Administratoren und die Gruppe „Führerschein Einsicht“.",
-          "Der Reiter „Info“ ist für alle sichtbar."
+          "Der Reiter „Info“ steht jedem angemeldeten Nutzer offen.",
+          "Fällt die Anmeldung weg, während die App offen ist, räumt sie den Bildschirm samt Fahrt-Dialog und Beleg-Ansicht, statt Namen und Eingaben im Hintergrund lesbar zu lassen."
         ]
       },
       {
@@ -220,13 +174,14 @@ const APP_CHANGELOG = [
         items: [
           "Die Ansicht ist für das Handy gebaut — die Fahrt lässt sich direkt am Fahrzeug eintragen, samt Foto und Unterschrift.",
           "Eingabefelder sind mindestens 16 Pixel groß, damit der iPhone-Browser beim Antippen nicht ungefragt in die Seite hineinzoomt und verschoben stehen bleibt.",
-          "Der Foto-Upload funktioniert auch auf älteren iPhones und iPads: die interne Datei-Kennung wird notfalls selbst im geforderten Format erzeugt. Zuvor schlug der Upload dort mit „Ungültige Datei-Id“ fehl, im externen Formular fielen die Fotos sogar unbemerkt aus dem Datensatz."
+          "Der Foto-Upload funktioniert auch auf älteren iPhones und iPads: die interne Datei-Kennung wird notfalls selbst im geforderten Format erzeugt."
         ]
       },
       {
-        title: "Daten & Speicherung",
+        title: "Daten und Speicherung",
         items: [
-          "Gespeichert wird in der Vereins-Nextcloud über die zentrale Anmeldung der Tools-Übersicht — ein eigenes Passwort braucht es nicht."
+          "Gespeichert wird in der Vereins-Nextcloud über die zentrale Anmeldung der Tools-Übersicht — ein eigenes Passwort braucht es nicht.",
+          "Eine Datei je Fahrt ist auf 10 MB begrenzt; mehr nimmt auch der Server nicht an."
         ]
       }
     ]
