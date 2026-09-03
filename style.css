@@ -347,6 +347,24 @@ textarea, .form-field textarea {
 }
 .extern-info { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 
+/* ---------- Abnahme durch einen Bearbeiter ---------- */
+.abnahme-box {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px;
+  padding: 10px 14px; margin-bottom: 14px;
+  border: 1px solid var(--blue); background: var(--blue-light); border-radius: 8px;
+}
+.abnahme-box .checkbox-row { margin: 0; }
+
+/* Eine abgenommene Fahrt ist eingefroren: die Felder sind per disabled gesperrt,
+   hier verschwinden zusätzlich die Knöpfe, die kein disabled-Attribut tragen
+   (Foto hinzufügen, Foto entfernen, Unterschrift löschen) und das Signaturfeld,
+   auf dem sonst weiter gezeichnet werden könnte. */
+#fahrt-form.is-readonly #btn-foto-upload,
+#fahrt-form.is-readonly #btn-signature-clear,
+#fahrt-form.is-readonly .foto-remove { display: none; }
+#fahrt-form.is-readonly .signature-wrap { pointer-events: none; opacity: 0.7; }
+#fahrt-form.is-readonly .form-fieldset { background: #fafafa; }
+
 /* ---------- extern.html: eigener Seitenrahmen (kein #app-shell/nav) ---------- */
 .extern-page main { max-width: 720px; }
 .extern-page #fx-form { display: flex; flex-direction: column; }

@@ -34,6 +34,18 @@ vor; Fahrten für Vorstand oder Zeugwart lassen sich frei eintippen. Auf der
 Eltern-Seite bleibt es ein reines Textfeld — dort gibt es keine Anmeldung und
 damit keinen Zugriff auf die Liste.
 
+## Prüfen und abnehmen
+
+Eine abgeschlossene Fahrt ist noch nicht erledigt: Die Bearbeiter des
+Fahrtenbuchs sehen sie durch und setzen den Haken **Fahrtenbucheintrag geprüft**.
+Damit wechselt sie von *abgeschlossen* auf *abgenommen* und wandert aus der
+Fahrtenliste in den Reiter **Archiv** — die Liste zeigt dann nur noch, was
+wirklich offen oder ungeprüft ist. An der Fahrt steht, wer wann abgenommen hat.
+
+Eine abgenommene Fahrt ist eingefroren und lässt sich von niemandem mehr ändern.
+Muss doch etwas korrigiert werden, nimmt ein Bearbeiter den Haken zurück; die
+Fahrt kommt dann samt Prüfvermerk zurück in die Bearbeitung.
+
 ## Warum die Führerschein-Kopie
 
 Wer ein Vereinsfahrzeug fährt, muss eine gültige Fahrerlaubnis haben — das ist
@@ -61,7 +73,8 @@ Beleg eingegangen, zeigt die Fahrt das Einreichdatum und öffnet ihn auf Klick.
 Der Knopf **CSV-Export** über der Liste stellt die Spalten frei zusammen —
 Fahrzeug und Fahrt, Kilometerstand, Datum und Uhrzeit, Übernahme und Übergabe,
 Checklisten, Mängel und Status sind einzeln wählbar. Ausgegeben wird genau die
-Menge, die Suche und Filter gerade zeigen. Einen PDF-Export gibt es hier nicht.
+Menge, die Suche und Filter gerade zeigen; eine Option nimmt zusätzlich die
+abgenommenen Fahrten aus dem Archiv mit. Einen PDF-Export gibt es hier nicht.
 
 ## Zugang
 

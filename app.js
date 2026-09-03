@@ -42,8 +42,13 @@ function fmtTimestamp(iso) {
   const d = new Date(iso);
   return isNaN(d.getTime()) ? "—" : d.toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" });
 }
-const STATUS_LABEL = { offen: "offen", abgeschlossen: "abgeschlossen" };
-const STATUS_FARBE = { offen: "#c9941f", abgeschlossen: "#2d8c4e" };
+// Drei Stufen: der Fahrer trägt ein (offen), unterschreibt und schließt ab
+// (abgeschlossen), ein Bearbeiter sieht es durch und nimmt es ab (abgenommen).
+// "abgenommen" ist zugleich das Archiv-Kriterium — solche Fahrten verschwinden
+// aus der Fahrtenliste und stehen nur noch im Archiv-Reiter.
+const STATUS_LABEL = { offen: "offen", abgeschlossen: "abgeschlossen", abgenommen: "abgenommen" };
+const STATUS_FARBE = { offen: "#c9941f", abgeschlossen: "#2d8c4e", abgenommen: "#1a56a0" };
+const ALLE_STATUS = ["offen", "abgeschlossen", "abgenommen"];
 
 // ---------- State ----------
 let appData = { meta: {}, fahrten: [] };
@@ -86,7 +91,9 @@ function normalizeFahrt(f) {
     maengelText: typeof d.maengelText === "string" ? d.maengelText : "",
     maengelFotos: Array.isArray(d.maengelFotos) ? d.maengelFotos.map(normalizeFoto).filter(Boolean) : [],
     unterschriftDataUrl: (typeof d.unterschriftDataUrl === "string" && /^data:image\//.test(d.unterschriftDataUrl)) ? d.unterschriftDataUrl : "",
-    status: d.status === "abgeschlossen" ? "abgeschlossen" : "offen",
+    status: ALLE_STATUS.includes(d.status) ? d.status : "offen",
+    geprueftVon: typeof d.geprueftVon === "string" ? d.geprueftVon : "",
+    geprueftAm: typeof d.geprueftAm === "string" ? d.geprueftAm : "",
     quelle: d.quelle === "extern" ? "extern" : "intern",
     fuehrerscheinKey: (typeof d.fuehrerscheinKey === "string" && d.fuehrerscheinKey) ? d.fuehrerscheinKey : null
   };
@@ -118,47 +125,66 @@ function mayViewFuehrerschein() { return !!currentUser && (currentUser.isAdmin |
 function visibleFahrten() {
   return canEdit() ? appData.fahrten.slice() : appData.fahrten.filter((f) => f.erstelltVon === myUsername());
 }
-function fillFahrerFilter() {
-  const el = document.getElementById("fahrten-fahrer");
+// Abgenommene Fahrten sind erledigt und stehen ab dann NUR noch im Archiv-Reiter,
+// nie mehr in der Fahrtenliste. Beide Listen speisen sich aus derselben
+// visibleFahrten()-Menge, das Rechte-Modell gilt also im Archiv unverändert.
+function istArchiviert(f) { return f.status === "abgenommen"; }
+function fillFahrerFilter(selectId, archiv) {
+  const el = document.getElementById(selectId);
   if (!el) return;
   const cur = el.value;
-  const namen = Array.from(new Set(appData.fahrten.map((f) => f.fahrerName).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+  const namen = Array.from(new Set(
+    appData.fahrten.filter((f) => istArchiviert(f) === archiv).map((f) => f.fahrerName).filter(Boolean)
+  )).sort((a, b) => a.localeCompare(b));
   el.innerHTML = `<option value="">Alle Fahrer</option>` + namen.map((n) => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join("");
   if (namen.includes(cur)) el.value = cur;
 }
 // Suche/Fahrer-Filter + Sortierung — einzige Quelle für "was ist gerade sichtbar",
-// genutzt von renderFahrten() (Bildschirmliste) UND vom CSV-Export (exportFahrtenCsv),
-// damit beide garantiert dieselbe Menge zeigen/exportieren.
-function filteredFahrten() {
-  const q = val("fahrten-search").trim().toLowerCase();
-  const ff = canEdit() ? val("fahrten-fahrer") : "";
-  const all = visibleFahrten();
-  return all.filter((f) => {
+// genutzt von renderFahrten()/renderArchiv() (Bildschirmlisten) UND vom CSV-Export
+// (exportFahrtenCsv), damit beide garantiert dieselbe Menge zeigen/exportieren.
+// archiv=true liefert die abgenommenen, archiv=false alle übrigen. archiv="alle"
+// hebt die Trennung auf (nur der Export nutzt das, mit den Suchfeldern des
+// Fahrten-Reiters — der Export sitzt dort, nicht im Archiv).
+function filteredFahrten(archiv) {
+  const q = val(archiv === true ? "archiv-search" : "fahrten-search").trim().toLowerCase();
+  const ff = canEdit() ? val(archiv === true ? "archiv-fahrer" : "fahrten-fahrer") : "";
+  return visibleFahrten().filter((f) => {
+    if (archiv !== "alle" && istArchiviert(f) !== !!archiv) return false;
     if (ff && f.fahrerName !== ff) return false;
     if (q && !`${f.reiseziel} ${f.abteilung} ${f.kennzeichen} ${f.fahrerName}`.toLowerCase().includes(q)) return false;
     return true;
   }).sort((a, b) => (b.datumStart || "").localeCompare(a.datumStart || "") || (b.erstelltAm || "").localeCompare(a.erstelltAm || ""));
 }
+function fahrtRowHtml(f) {
+  const farbe = STATUS_FARBE[f.status] || STATUS_FARBE.offen;
+  const sub = [f.abteilung, canEdit() ? ("Fahrer: " + (f.fahrerName || "—")) : null].filter(Boolean).map(escapeHtml).join(" · ");
+  const fotos = f.maengelFotos.length ? ` · 📷 ${f.maengelFotos.length}` : "";
+  const geprueft = istArchiviert(f) && f.geprueftAm
+    ? ` · ✔ geprüft ${escapeHtml(fmtTimestamp(f.geprueftAm))}${f.geprueftVon ? " von " + escapeHtml(f.geprueftVon) : ""}`
+    : "";
+  const externBadge = f.quelle === "extern" ? ` <span class="badge-extern" title="Von einem externen Nutzer eingetragen">🔗 Extern</span>` : "";
+  return `<div class="fahrt-row" data-id="${escapeHtml(f.id)}">
+    <div class="fr-main">
+      <div class="fr-title">${escapeHtml(fmtDatum(f.datumStart))} — ${escapeHtml(f.reiseziel || "ohne Ziel")}</div>
+      <div class="fr-sub muted">${sub}${fotos}${geprueft}</div>
+    </div>
+    <span class="status-badge" style="background:${farbe}">${escapeHtml(STATUS_LABEL[f.status] || f.status)}</span>${externBadge}
+  </div>`;
+}
 function renderFahrten() {
-  const all = visibleFahrten();
-  const rows = filteredFahrten();
+  const all = visibleFahrten().filter((f) => !istArchiviert(f));
+  const rows = filteredFahrten(false);
   updateExportInfoLine();
-
-  document.getElementById("fahrten-list").innerHTML = rows.map((f) => {
-    const farbe = STATUS_FARBE[f.status] || STATUS_FARBE.offen;
-    const sub = [f.abteilung, canEdit() ? ("Fahrer: " + (f.fahrerName || "—")) : null].filter(Boolean).map(escapeHtml).join(" · ");
-    const fotos = f.maengelFotos.length ? ` · 📷 ${f.maengelFotos.length}` : "";
-    const externBadge = f.quelle === "extern" ? ` <span class="badge-extern" title="Von einem externen Nutzer eingetragen">🔗 Extern</span>` : "";
-    return `<div class="fahrt-row" data-id="${escapeHtml(f.id)}">
-      <div class="fr-main">
-        <div class="fr-title">${escapeHtml(fmtDatum(f.datumStart))} — ${escapeHtml(f.reiseziel || "ohne Ziel")}</div>
-        <div class="fr-sub muted">${sub}${fotos}</div>
-      </div>
-      <span class="status-badge" style="background:${farbe}">${escapeHtml(STATUS_LABEL[f.status] || f.status)}</span>${externBadge}
-    </div>`;
-  }).join("");
+  document.getElementById("fahrten-list").innerHTML = rows.map(fahrtRowHtml).join("");
   document.getElementById("fahrten-count").textContent = `${rows.length} von ${all.length}`;
   document.getElementById("fahrten-empty").classList.toggle("hidden", rows.length > 0);
+}
+function renderArchiv() {
+  const all = visibleFahrten().filter(istArchiviert);
+  const rows = filteredFahrten(true);
+  document.getElementById("archiv-list").innerHTML = rows.map(fahrtRowHtml).join("");
+  document.getElementById("archiv-count").textContent = `${rows.length} von ${all.length}`;
+  document.getElementById("archiv-empty").classList.toggle("hidden", rows.length > 0);
 }
 
 // ---------- CSV-Export (konfigurierbar) ----------
@@ -176,7 +202,14 @@ function initExportPanel() {
   });
   document.getElementById("btn-export-felder-alle").addEventListener("click", () => setAllExportCheckboxes(true));
   document.getElementById("btn-export-felder-keine").addEventListener("click", () => setAllExportCheckboxes(false));
+  document.getElementById("export-mit-archiv").addEventListener("change", updateExportInfoLine);
   document.getElementById("btn-export-csv").addEventListener("click", exportFahrtenCsv);
+}
+// Was der Export liefern würde — eine Quelle für die Info-Zeile und den Export
+// selbst, damit die angekündigte Zahl und die exportierte Menge nie auseinanderlaufen.
+function exportRows() {
+  const cb = document.getElementById("export-mit-archiv");
+  return filteredFahrten(cb && cb.checked ? "alle" : false);
 }
 function renderExportFieldCheckboxes() {
   const wrap = document.getElementById("export-field-groups");
@@ -199,7 +232,7 @@ function updateExportInfoLine() {
   if (!el) return;
   const total = document.querySelectorAll(".export-field-cb").length;
   const checked = document.querySelectorAll(".export-field-cb:checked").length;
-  const rowCount = filteredFahrten().length;
+  const rowCount = exportRows().length;
   el.textContent = `${checked} von ${total} Feldern ausgewählt · exportiert ${rowCount} Fahrten (aktuelle Filterung/Suche).`;
 }
 function csvCell(value) {
@@ -220,7 +253,7 @@ function exportFieldValue(f, fahrt) {
 function exportFahrtenCsv() {
   const selectedKeys = Array.from(document.querySelectorAll(".export-field-cb:checked")).map((cb) => cb.dataset.field);
   if (!selectedKeys.length) { alert("Bitte mindestens ein Feld für den Export auswählen."); return; }
-  const rows = filteredFahrten();
+  const rows = exportRows();
   if (!rows.length) { alert("Die aktuelle Filterung/Suche ergibt keine Treffer zum Exportieren."); return; }
 
   const fieldLookup = new Map(EXPORT_FIELD_GROUPS.flatMap((g) => g.fields).map((f) => [f.key, f]));
@@ -286,7 +319,7 @@ function openFahrt(id) {
   renderChecks("ff-kontrolle-nach", KONTROLLE_NACH, fahrt);
   renderFotoList();
   document.getElementById("ff-hinweis").textContent = HINWEIS_ABSCHLUSS;
-  document.getElementById("btn-delete-fahrt").classList.toggle("hidden", !(fahrt && canManageFahrt(fahrt)));
+  applyAbnahmeUi(fahrt);
   const isExtern = !!(fahrt && fahrt.quelle === "extern");
   document.getElementById("ff-extern-info").classList.toggle("hidden", !isExtern);
   const fsBtn = document.getElementById("btn-view-fuehrerschein");
@@ -315,6 +348,46 @@ function openFahrt(id) {
   signaturePad.resize();
   document.getElementById("ff-kennzeichen").focus();
 }
+// ---------- Prüfen / Abnehmen ----------
+// ⚠️ Eine abgenommene Fahrt ist EINGEFROREN — für alle, auch für Bearbeiter.
+// Sonst wäre die Abnahme wertlos: geprüft wäre dann nur der Stand von damals,
+// und niemand sähe, dass danach noch etwas geändert wurde. Wer ändern muss,
+// nimmt erst den Prüf-Haken zurück; das löscht die Prüfung mit (siehe saveFahrt).
+function applyAbnahmeUi(fahrt) {
+  const abgenommen = !!(fahrt && istArchiviert(fahrt));
+  const pruefbar = !!(fahrt && canEdit() && (fahrt.status === "abgeschlossen" || abgenommen));
+
+  const box = document.getElementById("ff-abnahme-box");
+  box.classList.toggle("hidden", !pruefbar);
+  const cb = document.getElementById("ff-geprueft");
+  cb.checked = abgenommen;
+  document.getElementById("ff-abnahme-info").textContent = abgenommen && fahrt.geprueftAm
+    ? `Geprüft am ${fmtTimestamp(fahrt.geprueftAm)}${fahrt.geprueftVon ? " von " + fahrt.geprueftVon : ""}.`
+    : "Erst mit dem Haken wandert die Fahrt ins Archiv.";
+
+  // Read-only: Felder wirklich sperren, nicht nur die Knöpfe verstecken.
+  const form = document.getElementById("fahrt-form");
+  form.classList.toggle("is-readonly", abgenommen);
+  form.querySelectorAll("input, textarea, select").forEach((el) => { el.disabled = abgenommen; });
+  document.getElementById("ff-readonly-hinweis").classList.toggle("hidden", !abgenommen);
+
+  document.getElementById("btn-delete-fahrt").classList.toggle("hidden", abgenommen || !(fahrt && canManageFahrt(fahrt)));
+  ["btn-save-fahrt-offen", "btn-save-fahrt-abschluss"].forEach((id) => {
+    document.getElementById(id).classList.toggle("hidden", abgenommen);
+  });
+}
+// Der Haken speichert sofort — samt allem, was im Formular steht. Ein Prüfer,
+// der vor dem Abnehmen noch etwas korrigiert, verliert seine Korrektur so nicht.
+async function toggleAbnahme(checked) {
+  const fahrt = editingFahrtId ? appData.fahrten.find((f) => f.id === editingFahrtId) : null;
+  if (!fahrt) return;
+  const frage = checked
+    ? "Fahrt als geprüft abnehmen? Sie wandert damit ins Archiv und lässt sich nicht mehr ändern."
+    : "Prüfung zurücknehmen? Die Fahrt kommt zurück in die Fahrtenliste, der Prüfvermerk wird gelöscht.";
+  if (!confirm(frage)) { document.getElementById("ff-geprueft").checked = !checked; return; }
+  await saveFahrt(checked ? "abgenommen" : "abgeschlossen");
+}
+
 // Fragt asynchron ab, ob über den Beleg-Knopf schon ein Beleg zu dieser Fahrt
 // eingereicht wurde, und zeigt bei Treffer eine Bestätigung inkl. "Anzeigen"-Knopf
 // je angehängter Datei. Rein informativ — Fehler (z.B. Aktion noch nicht deployed)
@@ -373,10 +446,11 @@ async function saveFahrt(status) {
   const fahrerName = val("ff-fahrer").trim();
   const reiseziel = val("ff-reiseziel").trim();
   if (!fahrerName) { alert("Bitte den Namen des Fahrers angeben."); return; }
-  if (status === "abgeschlossen") {
+  if (status === "abgeschlossen" || status === "abgenommen") {
     // Abschließen erzwingt alle Pflichtfelder (alles außer Mängel) + alle Checklisten-
     // Häkchen; Zwischenspeichern ("offen") bleibt bewusst unvollständig möglich
-    // (deshalb novalidate am Formular, Prüfung nur hier).
+    // (deshalb novalidate am Formular, Prüfung nur hier). Für die Abnahme gilt
+    // dasselbe — abgenommen wird nur, was vollständig ist.
     if (!document.getElementById("fahrt-form").reportValidity()) return;
     if (!reiseziel) { alert("Bitte ein Reiseziel angeben."); return; }
     if (signaturePad.isEmpty()) { alert("Bitte unterschreiben, um die Fahrt abzuschließen."); return; }
@@ -405,6 +479,14 @@ async function saveFahrt(status) {
   collectChecks(fahrt);
   fahrt.unterschriftDataUrl = signaturePad.toDataURL();
   fahrt.status = status;
+  // Der Prüfvermerk hängt am Status "abgenommen" und nur daran. Jeder Weg zurück
+  // in die Bearbeitung löscht ihn mit — eine alte Abnahme darf nicht für einen
+  // Stand stehen bleiben, den danach noch jemand verändert hat.
+  if (status === "abgenommen") {
+    if (!fahrt.geprueftAm) { fahrt.geprueftVon = myName(); fahrt.geprueftAm = new Date().toISOString(); }
+  } else {
+    fahrt.geprueftVon = ""; fahrt.geprueftAm = "";
+  }
 
   // Fotos abgleichen: entfernte (Original oder in dieser Sitzung hochgeladen) löschen.
   const keepIds = editingFotos.map((f) => f.id);
@@ -554,8 +636,10 @@ function applyEditVisibility() {
 
 function renderAll() {
   if (bildschirmGeraeumt) return;
-  fillFahrerFilter();
+  fillFahrerFilter("fahrten-fahrer", false);
+  fillFahrerFilter("archiv-fahrer", true);
   renderFahrten();
+  renderArchiv();
   renderMeta();
   renderVersionInfo();
   applyEditVisibility();
@@ -566,7 +650,8 @@ function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll("nav button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
   document.querySelectorAll(".tab-section").forEach((s) => s.classList.toggle("active", s.id === "tab-" + tab));
-  if (tab === "fahrten") { fillFahrerFilter(); renderFahrten(); }
+  if (tab === "fahrten") { fillFahrerFilter("fahrten-fahrer", false); renderFahrten(); }
+  if (tab === "archiv") { fillFahrerFilter("archiv-fahrer", true); renderArchiv(); }
   if (tab === "info") { renderMeta(); renderVersionInfo(); }
 }
 
@@ -777,12 +862,24 @@ function setupListeners() {
   document.getElementById("btn-new-fahrt").addEventListener("click", () => openFahrt(null));
   initExportPanel();
 
+  // Archiv (abgenommene Fahrten) — gleiche Zeilen, gleiches Modal, nur andere Menge.
+  ["archiv-search", "archiv-fahrer"].forEach((id) => {
+    const el = document.getElementById(id);
+    el.addEventListener("input", renderArchiv);
+    el.addEventListener("change", renderArchiv);
+  });
+  document.getElementById("archiv-list").addEventListener("click", (e) => {
+    const row = e.target.closest(".fahrt-row");
+    if (row) openFahrt(row.dataset.id);
+  });
+
   // Fahrt-Modal
   document.getElementById("fahrt-modal-close").addEventListener("click", () => closeFahrt(true));
   document.getElementById("btn-cancel-fahrt").addEventListener("click", () => closeFahrt(true));
   document.getElementById("btn-save-fahrt-offen").addEventListener("click", () => saveFahrt("offen"));
   document.getElementById("btn-save-fahrt-abschluss").addEventListener("click", () => saveFahrt("abgeschlossen"));
   document.getElementById("btn-delete-fahrt").addEventListener("click", deleteFahrt);
+  document.getElementById("ff-geprueft").addEventListener("change", (e) => toggleAbnahme(e.currentTarget.checked));
   document.getElementById("fahrt-modal").addEventListener("click", (e) => { if (e.target.id === "fahrt-modal") closeFahrt(true); });
   document.getElementById("fahrt-form").addEventListener("submit", (e) => { e.preventDefault(); saveFahrt("offen"); });
 

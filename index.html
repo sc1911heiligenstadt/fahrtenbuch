@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>🚐 Fahrtenbuch</title>
 <meta name="theme-color" content="#1a56a0" />
-<link rel="stylesheet" href="style.css?v=1.0" />
+<link rel="stylesheet" href="style.css?v=1.1" />
 </head>
 <body>
 
@@ -33,6 +33,7 @@
 
     <nav>
       <button data-tab="fahrten" class="active">Fahrten</button>
+      <button data-tab="archiv">Archiv</button>
       <button data-tab="info" style="margin-left:auto;">Info</button>
     </nav>
 
@@ -60,12 +61,33 @@
             </div>
           </div>
           <div id="export-field-groups"></div>
+          <label class="checkbox-row" style="margin-top:14px;"><input type="checkbox" id="export-mit-archiv" /> <span>Abgenommene Fahrten aus dem Archiv mit exportieren</span></label>
           <p class="muted" id="export-info-line" style="margin:10px 0 14px;"></p>
           <button class="btn success small" id="btn-export-csv">CSV exportieren</button>
         </div>
         <div class="card">
           <div class="list-rows" id="fahrten-list"></div>
           <div class="empty-state hidden" id="fahrten-empty">Noch keine Fahrten erfasst — oben „+ Neue Fahrt“ anlegen.</div>
+        </div>
+      </section>
+
+      <!-- ---------- Archiv (abgenommene Fahrten) ---------- -->
+      <section class="tab-section" id="tab-archiv">
+        <div class="toolbar">
+          <div class="filter-bar" id="archiv-filter" style="margin-bottom:0;">
+            <input type="search" id="archiv-search" placeholder="Suche nach Reiseziel / Mannschaft / Kennzeichen…" />
+            <select id="archiv-fahrer" class="editor-only hidden"><option value="">Alle Fahrer</option></select>
+            <span class="filter-count" id="archiv-count"></span>
+          </div>
+        </div>
+        <div class="card">
+          <p class="muted" style="margin:0 0 12px;">
+            Hier stehen die Fahrten, die ein Bearbeiter durchgesehen und mit dem Haken
+            „Fahrtenbucheintrag geprüft“ abgenommen hat. Sie sind eingefroren — zum Ändern muss
+            die Prüfung in der Fahrt zuerst zurückgenommen werden.
+          </p>
+          <div class="list-rows" id="archiv-list"></div>
+          <div class="empty-state hidden" id="archiv-empty">Noch keine Fahrt abgenommen.</div>
         </div>
       </section>
 
@@ -129,6 +151,16 @@
           <button type="button" class="btn small secondary" id="btn-submit-beleg">🧾 Beleg einreichen</button>
           <span class="muted" id="ff-beleg-status"></span>
         </div>
+
+        <!-- Abnahme durch einen Bearbeiter. ⚠️ Bewusst AUSSERHALB von #fahrt-form:
+             bei einer abgenommenen Fahrt sperrt applyAbnahmeUi() alle Formularfelder,
+             und dieser Haken ist genau der Weg, die Sperre wieder aufzuheben. -->
+        <div class="abnahme-box hidden" id="ff-abnahme-box">
+          <label class="checkbox-row"><input type="checkbox" id="ff-geprueft" /> <span><strong>Fahrtenbucheintrag geprüft</strong></span></label>
+          <span class="muted" id="ff-abnahme-info"></span>
+        </div>
+        <p class="muted hinweis-box hidden" id="ff-readonly-hinweis">🔒 Diese Fahrt ist geprüft und abgenommen und liegt im Archiv. Zum Ändern muss ein Bearbeiter oben den Prüf-Haken entfernen.</p>
+
         <form id="fahrt-form" autocomplete="off" novalidate>
 
           <p class="muted" style="margin:0 0 12px;">* Pflichtfeld — zum Abschließen der Fahrt müssen alle
@@ -242,9 +274,9 @@
     </div>
   </div>
 
-  <script src="config.js?v=1.0"></script>
+  <script src="config.js?v=1.1"></script>
   <script src="db.js?v=1.0"></script>
   <script src="signature-pad.js?v=1.0"></script>
-  <script src="app.js?v=1.0"></script>
+  <script src="app.js?v=1.1"></script>
 </body>
 </html>

@@ -95,7 +95,9 @@ const EXPORT_FIELD_GROUPS = [
       { key: "maengelText", label: "Mängel / Beschädigungen" },
       { key: "status", label: "Status", type: "status" },
       { key: "quelle", label: "Quelle", type: "quelle" },
-      { key: "erstelltAm", label: "Erstellt am", type: "timestamp" }
+      { key: "erstelltAm", label: "Erstellt am", type: "timestamp" },
+      { key: "geprueftVon", label: "Geprüft von" },
+      { key: "geprueftAm", label: "Geprüft am", type: "timestamp" }
     ]
   }
 ];
@@ -106,6 +108,35 @@ const HINWEIS_ABSCHLUSS =
   "Tankkarte sind abschließend in den SCH-Briefkasten am Haupteingang des Gesundbrunnenstadions zu hinterlassen.";
 
 const APP_CHANGELOG = [
+  {
+    version: "1.1",
+    groups: [
+      {
+        title: "Fahrt prüfen und abnehmen",
+        items: [
+          "Eine abgeschlossene Fahrt wird von den Bearbeitern des Fahrtenbuchs noch einmal durchgesehen und mit dem Häkchen „Fahrtenbucheintrag geprüft“ abgenommen.",
+          "Mit der Abnahme wechselt die Fahrt von „abgeschlossen“ auf „abgenommen“ und wandert aus der Fahrtenliste ins Archiv.",
+          "Wer abgenommen hat und wann, steht an der Fahrt und lässt sich mitexportieren.",
+          "Die Abnahme lässt sich zurücknehmen: das Häkchen wieder entfernen holt die Fahrt zurück in die Fahrtenliste."
+        ]
+      },
+      {
+        title: "Archiv",
+        items: [
+          "Neuer Reiter „Archiv“ mit allen abgenommenen Fahrten, samt eigener Suche und Fahrer-Auswahl.",
+          "Die Fahrtenliste zeigt dadurch nur noch, was wirklich offen oder noch ungeprüft ist.",
+          "Jeder sieht im Archiv dieselben Fahrten wie in der Fahrtenliste: die eigenen, Bearbeiter alle.",
+          "Eine abgenommene Fahrt ist für den Fahrer nur noch lesbar — ändern kann sie erst wieder, wer die Abnahme zurücknimmt."
+        ]
+      },
+      {
+        title: "Export",
+        items: [
+          "Der CSV-Export hat eine Option „Abgenommene Fahrten aus dem Archiv mit exportieren“ und zwei neue Felder: geprüft von und geprüft am."
+        ]
+      }
+    ]
+  },
   {
     version: "1.0",
     groups: [
