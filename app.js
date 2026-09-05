@@ -399,7 +399,16 @@ async function loadBelegStatus(fahrtId, statusEl) {
     statusEl.innerHTML = "";
     if (!belege || !belege.length) return;
     const b = belege[0];
-    statusEl.appendChild(document.createTextNode(`📎 Beleg eingereicht am ${fmtTimestamp(b.submittedAt)} `));
+    // ⚠️ Seit dem 05.09.2026 liefert das Gateway auch Belege, welche die
+    // Geschäftsstelle schon mit „Erledigt“ abgelegt hat — vorher verschwanden
+    // sie hier spurlos, und es sah aus, als hätte nie jemand einen Beleg
+    // eingereicht. `erledigt` ist additiv: ein älterer Worker liefert es nicht,
+    // dann steht wie bisher nur „eingereicht“.
+    const wann = fmtTimestamp(b.submittedAt);
+    statusEl.appendChild(document.createTextNode(
+      b.erledigt
+        ? `📎 Beleg eingereicht am ${wann} · von der Geschäftsstelle bearbeitet `
+        : `📎 Beleg eingereicht am ${wann} `));
     const files = Array.isArray(b.files) ? b.files : [];
     files.forEach((f, i) => {
       const btn = document.createElement("button");

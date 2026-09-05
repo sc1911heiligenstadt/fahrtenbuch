@@ -109,6 +109,18 @@ const HINWEIS_ABSCHLUSS =
 
 const APP_CHANGELOG = [
   {
+    version: "1.2",
+    groups: [
+      {
+        title: "Ein bearbeiteter Beleg verschwindet nicht mehr",
+        items: [
+          "Sobald die Geschäftsstelle einen eingereichten Beleg auf „Erledigt“ setzt, wandert er in einen Unterordner. Hier war er danach spurlos weg — es sah aus, als hätte nie jemand einen Beleg geschickt, und „Anzeigen“ hätte ins Leere geführt.",
+          "Jetzt steht er weiter da, mit dem Zusatz „von der Geschäftsstelle bearbeitet“, und die Datei lässt sich öffnen."
+        ]
+      }
+    ]
+  },
+  {
     version: "1.1",
     groups: [
       {
