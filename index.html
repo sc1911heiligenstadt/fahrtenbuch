@@ -44,7 +44,7 @@
         <div class="toolbar">
           <div class="filter-bar" id="fahrten-filter" style="margin-bottom:0;">
             <input type="search" id="fahrten-search" placeholder="Suche nach Reiseziel / Mannschaft / Kennzeichen…" />
-            <select id="fahrten-fahrer" class="editor-only hidden"><option value="">Alle Fahrer</option></select>
+            <select id="fahrten-fahrer" aria-label="Fahrten nach Fahrer filtern" class="editor-only hidden"><option value="">Alle Fahrer</option></select>
             <span class="filter-count" id="fahrten-count"></span>
           </div>
           <div class="toolbar-right">
@@ -76,7 +76,7 @@
         <div class="toolbar">
           <div class="filter-bar" id="archiv-filter" style="margin-bottom:0;">
             <input type="search" id="archiv-search" placeholder="Suche nach Reiseziel / Mannschaft / Kennzeichen…" />
-            <select id="archiv-fahrer" class="editor-only hidden"><option value="">Alle Fahrer</option></select>
+            <select id="archiv-fahrer" aria-label="Archiv nach Fahrer filtern" class="editor-only hidden"><option value="">Alle Fahrer</option></select>
             <span class="filter-count" id="archiv-count"></span>
           </div>
         </div>
@@ -228,7 +228,7 @@
             <div class="foto-list" id="ff-foto-list"></div>
             <div class="btn-row" style="justify-content:flex-start;margin-top:8px;">
               <button type="button" class="btn small secondary" id="btn-foto-upload">Foto hinzufügen…</button>
-              <input type="file" id="ff-foto-input" accept="image/*" multiple class="hidden" />
+              <input type="file" id="ff-foto-input" aria-label="Foto eines Mangels auswählen" accept="image/*" multiple class="hidden" />
             </div>
           </fieldset>
 
