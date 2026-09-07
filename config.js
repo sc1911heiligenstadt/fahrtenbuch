@@ -107,7 +107,179 @@ const HINWEIS_ABSCHLUSS =
   "Fahrzeugcheckliste, Fahrzeugschlüssel, Beleg der Tankkarte (Name des Fahrers vermerken) und die " +
   "Tankkarte sind abschließend in den SCH-Briefkasten am Haupteingang des Gesundbrunnenstadions zu hinterlassen.";
 
+// Was das Fahrtenbuch kann -- steht im Info-Reiter der Hauptseite als Karte
+// "Funktionen". WICHTIG: Das ist NICHT der Changelog. Hier steht der ZUSTAND
+// ("die Fahrt laesst sich zwischenspeichern"), dort die Aenderung ("die Fahrt
+// laesst sich JETZT zwischenspeichern"). Wer eine Funktion umbaut oder
+// abschaltet, zieht diesen Text mit -- und ebenso den Abschnitt FAHRTENBUCH in
+// E:\SC1911-Tools-Anleitung.txt.
+const APP_FUNKTIONEN = [
+  {
+    title: "Fahrt eintragen",
+    items: [
+      "Über „+ Neue Fahrt“ entsteht der Eintrag: Kennzeichen, Name des Fahrers, Abteilung oder Mannschaft, Anzahl der Insassen und Reiseziel.",
+      "Dazu Kilometerstand bei Start und Ende, Datum und Uhrzeit beider Zeitpunkte sowie Übernahme und Übergabe mit Ort und Person.",
+      "Das Feld „Abteilung / Mannschaft“ schlägt beim Tippen die Mannschaften des Vereins vor. Ein eigener Eintrag für Vorstand, Zeugwart oder eine Vereinsfahrt bleibt möglich."
+    ]
+  },
+  {
+    title: "Sicherheits-Checkliste",
+    items: [
+      "Vor der Fahrt sind die Anforderungen an den Fahrer abzuhaken: gültiger Führerschein, Mindestalter 23 Jahre, kein Alkohol oder Drogen.",
+      "Dazu die Fahrzeugkontrolle vor der Fahrt — Verkehrs- und Betriebssicherheit, Sichtkontrolle — und nach der Fahrt zusätzlich vollgetankt und besenrein.",
+      "Die Führerschein-Kopie selbst liegt nicht hier, sondern im Werkzeug „Trainerdaten“."
+    ]
+  },
+  {
+    title: "Mängel und Fotos",
+    items: [
+      "Beschädigungen werden als Freitext beschrieben und mit Fotos belegt. Der Mangel hängt an der Fahrt und bleibt damit dem Fahrzeug zugeordnet.",
+      "Die Fotos liegen in der Vereins-Nextcloud; per Mail muss nichts verschickt werden.",
+      "Wird eine Fahrt gelöscht oder ein Foto entfernt, verschwindet es auch dort. Bleibt etwas liegen, sagt die App wie viele Fotos es sind, statt darüber hinwegzugehen."
+    ]
+  },
+  {
+    title: "Zwischenspeichern und abschließen",
+    items: [
+      "Eine begonnene Fahrt lässt sich als „offen“ zwischenspeichern und später fertigstellen.",
+      "Zum Abschließen sind alle Felder außer den Mängeln Pflicht, ebenso jeder Punkt der Checkliste.",
+      "Unterschrieben wird mit dem Finger oder der Maus direkt auf dem Bildschirm."
+    ]
+  },
+  {
+    title: "Fahrtenliste",
+    items: [
+      "Der Reiter „Fahrten“ zeigt, was offen oder abgeschlossen und noch ungeprüft ist — mit Datum, Reiseziel, Kennzeichen und Status.",
+      "Die Suche greift auf Reiseziel, Mannschaft und Kennzeichen. Bearbeiter haben zusätzlich eine Auswahl nach Fahrer.",
+      "Fahrten, die über die Seite ohne Anmeldung eingetragen wurden, sind in der Liste als extern gekennzeichnet."
+    ]
+  },
+  {
+    title: "Prüfen und Archiv",
+    items: [
+      "Eine abgeschlossene Fahrt wird von einem Bearbeiter durchgesehen und mit dem Haken „Fahrtenbucheintrag geprüft“ abgenommen.",
+      "Mit der Abnahme wandert die Fahrt aus der Fahrtenliste in den Reiter „Archiv“ und ist eingefroren. Ändern kann sie erst wieder, wer die Prüfung zurücknimmt.",
+      "Wer abgenommen hat und wann, steht an der Fahrt und lässt sich mitexportieren.",
+      "Das Archiv hat eine eigene Suche und Fahrer-Auswahl; jeder sieht dort dieselben Fahrten wie in der Fahrtenliste."
+    ]
+  },
+  {
+    title: "Beleg einreichen",
+    items: [
+      "Aus einer Fahrt heraus lässt sich ein Tankbeleg beim Vereinsbudget einreichen. Fahrer, Datum und Zweck sind vorausgefüllt, es fehlt nur das Foto.",
+      "Ist ein Beleg eingegangen, zeigt die Fahrt das Einreichdatum und öffnet den Beleg auf Knopfdruck.",
+      "Hat die Geschäftsstelle den Beleg bearbeitet, bleibt er sichtbar und trägt den Zusatz „von der Geschäftsstelle bearbeitet“."
+    ]
+  },
+  {
+    title: "Fahrer ohne Vereinskonto",
+    items: [
+      "Eltern, die eine Mannschaft fahren, tragen ihre Fahrt über eine eigene Seite ohne Anmeldung ein — geschützt durch einen Zugriffscode statt durch ein Konto.",
+      "Dort ist zusätzlich die Führerschein-Kopie Pflicht; sie wird abgeschottet gespeichert.",
+      "Solche Fahrten erscheinen sofort in der Fahrtenliste und lassen sich dort prüfen wie jede andere."
+    ]
+  },
+  {
+    title: "Export",
+    items: [
+      "Bearbeiter stellen sich den CSV-Export selbst zusammen: Fahrzeug und Fahrt, Kilometerstand, Datum und Uhrzeit, Übernahme und Übergabe, Checklisten, Mängel und Status sind einzeln wählbar.",
+      "Der Export übernimmt Suche und Filter der Liste. Darüber steht, wie viele Fahrten und wie viele Felder gerade gewählt sind.",
+      "Auf Wunsch kommen die abgenommenen Fahrten aus dem Archiv mit."
+    ]
+  },
+  {
+    title: "Wer was sieht",
+    items: [
+      "Jeder angemeldete Nutzer legt eigene Fahrten an und sieht nur diese.",
+      "Die Gruppe „Fahrtenbuch Bearbeiter“ und Administratoren sehen und verwalten alle Fahrten, nehmen sie ab und nutzen den CSV-Export.",
+      "Den Führerschein aus einer externen Fahrt sehen nur Administratoren und die Gruppe „Führerschein Einsicht“.",
+      "Fällt die Anmeldung weg, während die App offen ist, räumt sie den Bildschirm samt Fahrt-Dialog und Beleg-Ansicht, statt Namen und Eingaben lesbar stehen zu lassen."
+    ]
+  },
+  {
+    title: "Am Handy und beim Speichern",
+    items: [
+      "Die Ansicht ist fürs Handy gebaut — die Fahrt lässt sich direkt am Fahrzeug eintragen, samt Foto und Unterschrift.",
+      "Gespeichert wird in der Vereins-Nextcloud über die zentrale Anmeldung der Tools-Übersicht; ein eigenes Passwort braucht es nicht.",
+      "Eine hochgeladene Datei darf höchstens 10 MB groß sein; mehr nimmt auch der Server nicht an."
+    ]
+  }
+];
+
+// Dasselbe fuer extern.html -- den Einreiche-Weg ohne Anmeldung. Diese Seite
+// kann bewusst weniger als die Hauptseite (keine Fahrtenliste, kein Archiv,
+// kein Export, kein Zwischenspeichern), darum eine eigene, kuerzere Liste.
+const APP_FUNKTIONEN_EXTERN = [
+  {
+    title: "Wofür diese Seite ist",
+    items: [
+      "Sie ist für Fahrerinnen und Fahrer ohne Vereinskonto gedacht — etwa Eltern, die eine Mannschaft zum Auswärtsspiel fahren.",
+      "Für diesen Fall ersetzt sie die Papier-Checkliste des Vereins.",
+      "Wer ein Vereinskonto hat, trägt seine Fahrt stattdessen im internen Fahrtenbuch ein."
+    ]
+  },
+  {
+    title: "Zugriffscode statt Anmeldung",
+    items: [
+      "Vor dem Formular steht ein vereinsweiter Zugriffscode; er ist einmalig beim Verein zu erfragen.",
+      "Eine Registrierung, ein eigenes Passwort oder ein Konto gibt es hier nicht."
+    ]
+  },
+  {
+    title: "Was einzutragen ist",
+    items: [
+      "Kennzeichen, Name des Fahrers, Abteilung oder Mannschaft, Anzahl der Insassen und Reiseziel.",
+      "Kilometerstand bei Start und Ende, Datum und Uhrzeit beider Zeitpunkte sowie Übernahme und Übergabe mit Ort und Person.",
+      "„Abteilung / Mannschaft“ ist hier ein freies Textfeld — ohne Anmeldung gibt es keinen Zugriff auf die Mannschaftsliste des Vereins."
+    ]
+  },
+  {
+    title: "Checkliste, Führerschein, Mängel",
+    items: [
+      "Die Sicherheitspunkte sind abzuhaken: gültiger Führerschein, Mindestalter 23 Jahre, kein Alkohol, Verkehrssicherheit und Sichtkontrolle vor der Fahrt, vollgetankt und besenrein danach.",
+      "Ein Foto oder Scan des eigenen Führerscheins ist Pflicht. Die Kopie wird abgeschottet gespeichert und ist nur für Administratoren und die Gruppe „Führerschein Einsicht“ einsehbar.",
+      "Mängel und Beschädigungen sind freiwillig und lassen sich mit Fotos belegen. Eine Datei darf höchstens 10 MB groß sein."
+    ]
+  },
+  {
+    title: "Absenden und danach",
+    items: [
+      "Alle Felder außer den Mängeln sind Pflicht, ebenso jeder Punkt der Checkliste, die Führerschein-Kopie und die Unterschrift mit Finger oder Maus.",
+      "Mit dem Absenden ist der Eintrag abgeschlossen. Zwischenspeichern und späteres Ändern gibt es auf dieser Seite nicht — das kann nur das interne Fahrtenbuch.",
+      "Die Bestätigung fasst die Fahrt zusammen. Von dort lässt sich ein Tankbeleg beim Vereinsbudget einreichen oder gleich die nächste Fahrt eintragen."
+    ]
+  },
+  {
+    title: "Was mit den Angaben geschieht",
+    items: [
+      "Die Fahrt steht sofort im Fahrtenbuch des Vereins und ist dort als extern eingetragen gekennzeichnet.",
+      "Gespeichert wird auf Servern in Deutschland, die ein Auftragsverarbeiter für den Verein betreibt.",
+      "Über dem Absenden-Knopf steht ausführlich, wozu die Daten erhoben werden, wer sie erhält und wie lange sie bleiben."
+    ]
+  },
+  {
+    title: "Am Handy",
+    items: [
+      "Die Seite ist fürs Handy gebaut — die Fahrt lässt sich direkt am Fahrzeug eintragen, samt Foto und Unterschrift.",
+      "Der Foto-Upload funktioniert auch auf älteren iPhones und iPads."
+    ]
+  }
+];
+
 const APP_CHANGELOG = [
+  {
+    version: "1.3",
+    groups: [
+      {
+        title: "Im Info-Reiter steht jetzt, was die App kann",
+        items: [
+          "Die Liste der Änderungen und die Versionsnummer sind aus dem Info-Reiter verschwunden.",
+          "Stattdessen steht dort die Karte „Funktionen“: was das Fahrtenbuch kann, nach Themen geordnet. Die Seite für Fahrer ohne Vereinskonto hat eine eigene, kürzere Liste.",
+          "Was sich geändert hat, steht weiterhin in den Neuigkeiten auf der Startseite der Tools-Übersicht."
+        ]
+      }
+    ]
+  },
   {
     version: "1.2",
     groups: [

@@ -614,8 +614,14 @@ function renderMeta() {
   document.getElementById("meta-view").innerHTML = rows.map(([k, v]) =>
     `<div class="form-field"><label>${escapeHtml(k)}</label><span>${escapeHtml(v)}</span></div>`).join("");
 }
+// Die Aenderungsliste steht seit 07.09.2026 NICHT mehr im Info-Reiter -- dort
+// stehen nur noch die Funktionen der App, und die Versionspille ist aus
+// demselben Grund weg. APP_CHANGELOG bleibt in config.js stehen und wird
+// weitergepflegt: er ist die Quelle fuer die grosse Anleitung und fuer die
+// Neuigkeiten auf der Startseite der Tools-Uebersicht. Diese Funktion steigt
+// darum still aus, wenn es den Container nicht gibt, statt den Seitenstart
+// mit einem Fehler abzubrechen.
 function renderVersionInfo() {
-  document.querySelectorAll("#version-badge, #version-badge-2").forEach((el) => { if (el) el.textContent = "v" + APP_VERSION; });
   const list = document.getElementById("changelog-list");
   if (!list) return;
   list.innerHTML = APP_CHANGELOG.map((entry) => `
@@ -627,6 +633,19 @@ function renderVersionInfo() {
           <ul class="cg-items">${g.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>
         </div>`).join("")}
     </div>`).join("");
+}
+// Was das Fahrtenbuch kann -- die Karte "Funktionen" im Info-Reiter. Nutzt
+// dieselben CSS-Klassen wie frueher die Aenderungsliste (.changelog-group,
+// .cg-title, .cg-items), damit beide Karten gleich aussehen.
+function renderFunktionen() {
+  const container = document.getElementById("funktionen-list");
+  if (!container) return;
+  container.innerHTML = APP_FUNKTIONEN.map((g) => `
+    <div class="changelog-group">
+      <div class="cg-title">${escapeHtml(g.title)}</div>
+      <ul class="cg-items">${g.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>
+    </div>
+  `).join("");
 }
 function renderHeaderUser() {
   const el = document.getElementById("header-user");
@@ -651,6 +670,7 @@ function renderAll() {
   renderArchiv();
   renderMeta();
   renderVersionInfo();
+  renderFunktionen();
   applyEditVisibility();
 }
 
@@ -661,7 +681,7 @@ function switchTab(tab) {
   document.querySelectorAll(".tab-section").forEach((s) => s.classList.toggle("active", s.id === "tab-" + tab));
   if (tab === "fahrten") { fillFahrerFilter("fahrten-fahrer", false); renderFahrten(); }
   if (tab === "archiv") { fillFahrerFilter("archiv-fahrer", true); renderArchiv(); }
-  if (tab === "info") { renderMeta(); renderVersionInfo(); }
+  if (tab === "info") { renderMeta(); renderVersionInfo(); renderFunktionen(); }
 }
 
 // ---------- Gateway: Laden / Speichern / Konflikte ----------

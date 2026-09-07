@@ -325,8 +325,13 @@ function activateTab(name) {
   document.querySelectorAll(".tab-section").forEach((s) => s.classList.toggle("active", s.id === "tab-" + name));
 }
 
+// Die Aenderungsliste steht seit 07.09.2026 NICHT mehr im Info-Reiter -- dort
+// stehen nur noch die Funktionen dieser Seite, und die Versionspille ist aus
+// demselben Grund weg. APP_CHANGELOG bleibt in config.js stehen und wird
+// weitergepflegt: er ist die Quelle fuer die grosse Anleitung und fuer die
+// Neuigkeiten auf der Startseite der Tools-Uebersicht. Diese Funktion steigt
+// darum still aus, wenn es den Container nicht gibt.
 function renderVersionInfo() {
-  document.querySelectorAll("#version-badge, #version-badge-2").forEach((el) => { if (el) el.textContent = "v" + APP_VERSION; });
   const list = document.getElementById("changelog-list");
   if (!list) return;
   list.innerHTML = APP_CHANGELOG.map((entry) => `
@@ -340,11 +345,26 @@ function renderVersionInfo() {
     </div>`).join("");
 }
 
+// Was diese Seite kann -- die Karte "Funktionen" im Info-Reiter. Eigene Liste
+// (APP_FUNKTIONEN_EXTERN), weil der Weg ohne Anmeldung weniger kann als die
+// Hauptseite. Klassen wie frueher die Aenderungsliste, damit es gleich aussieht.
+function renderFunktionen() {
+  const container = document.getElementById("funktionen-list");
+  if (!container) return;
+  container.innerHTML = APP_FUNKTIONEN_EXTERN.map((g) => `
+    <div class="changelog-group">
+      <div class="cg-title">${escapeHtml(g.title)}</div>
+      <ul class="cg-items">${g.items.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>
+    </div>
+  `).join("");
+}
+
 function setupInfoTab() {
   document.querySelectorAll("nav button[data-tab]").forEach((b) => {
     b.addEventListener("click", () => activateTab(b.dataset.tab));
   });
   renderVersionInfo();
+  renderFunktionen();
 }
 
 document.addEventListener("DOMContentLoaded", () => { init(); setupInfoTab(); });

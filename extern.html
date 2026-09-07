@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>🚐 Fahrtenbuch — Fahrt eintragen</title>
 <meta name="theme-color" content="#1a56a0" />
-<link rel="stylesheet" href="style.css?v=1.2" />
+<link rel="stylesheet" href="style.css?v=1.3" />
 </head>
 <body class="extern-page">
 
@@ -203,16 +203,20 @@
     <!-- ---------- Info ---------- -->
     <div class="tab-section" id="tab-info">
       <div class="card">
-        <h2>Über das externe Fahrtenbuch <span class="version-badge" id="version-badge-2"></span></h2>
+        <h2>Über das externe Fahrtenbuch</h2>
         <p class="muted">
           Diese Seite ist für Fahrerinnen und Fahrer ohne Vereinskonto gedacht — etwa Eltern,
           die eine Mannschaft zum Auswärtsspiel fahren. Mit dem Zugriffscode vom Verein lässt
           sich die Fahrt eintragen und abschließen, ganz ohne Anmeldung.
         </p>
       </div>
+      <!-- Was diese Seite kann. Quelle: APP_FUNKTIONEN_EXTERN in config.js —
+           eigene, kuerzere Liste, weil der Weg ohne Anmeldung weniger kann
+           als die Hauptseite. APP_CHANGELOG wird seit 07.09.2026 nicht mehr
+           angezeigt. -->
       <div class="card">
-        <h2>Änderungen</h2>
-        <div id="changelog-list"></div>
+        <h2>Funktionen</h2>
+        <div id="funktionen-list"></div>
       </div>
     </div>
   </main>
@@ -230,9 +234,9 @@
     </div>
   </div>
 
-  <script src="config.js?v=1.1"></script>
+  <script src="config.js?v=1.2"></script>
   <script src="db-extern.js?v=1.0"></script>
   <script src="signature-pad.js?v=1.0"></script>
-  <script src="extern.js?v=1.0"></script>
+  <script src="extern.js?v=1.1"></script>
 </body>
 </html>
